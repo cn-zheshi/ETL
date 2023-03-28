@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.nju.edu.cn/schema"
+        xmlns:tns="http://www.nju.edu.cn/schema" elementFormDefault="qualified">
+
+    <element name="学校部门信息" type="tns:部门信息类型" />
+
+    <simpleType name="部门名称类型">
+        <restriction base="string" />
+    </simpleType>
+
+    <simpleType name="电话类型">
+        <restriction base="string">
+            <pattern value="([0-9])*"/>
+            <minLength value="7"/>
+            <maxLength value="19"/>
+        </restriction>
+    </simpleType>
+
+
+
+    <complexType name="部门信息类型">
+        <sequence>
+            <element name="部门名称" type="tns:部门名称类型" />
+            <element name="负责人" type="string" />
+            <element name="办公地址" type="string" />
+            <element name="电话" type="tns:电话类型" />
+
+        </sequence>
+    </complexType>
+
+</schema>
