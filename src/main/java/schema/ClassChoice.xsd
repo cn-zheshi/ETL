@@ -3,8 +3,8 @@
         xmlns:tns="http://jw.nju.edu.cn/schema" elementFormDefault="qualified">
 
 
-    <include schemaLocation="formatStudent.xsd"/>
-    <include schemaLocation="formatClass.xsd"/>
+    <include schemaLocation="Student.xsd"/>
+    <include schemaLocation="Class.xsd"/>
 
     <element name="Choices" type="tns:choiceListType" />
 

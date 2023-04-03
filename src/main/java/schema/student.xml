@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="gb2312"?>
-<Students xmlns="http://jw.nju.edu.cn/schema"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://jw.nju.edu.cn/schema formatStudent.xsd">
+<Students>
     <student>
         <id>123456789</id>
         <name>student1</name>

@@ -1,25 +1,25 @@
 <?xml version= "1.0" encoding= "gb2312"?>
 
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:jw="http://jw.nju.edu.cn/schema">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     <xsl:output method="xml" encoding="gb2312" />
     <xsl:template match="/">
         <xsl:apply-templates />
     </xsl:template>
-    <xsl:template match="jw:Students">
+    <xsl:template match="Students">
         <Students>
-            <xsl:for-each select="jw:student">
+            <xsl:for-each select="student">
                 <student>
                     <学号>
-                        <xsl:value-of select="jw:id" />
+                        <xsl:value-of select="id" />
                     </学号>
                     <名臣>
-                        <xsl:value-of select="jw:name" />
+                        <xsl:value-of select="name" />
                     </名臣>
                     <性别>
-                        <xsl:value-of select="jw:sex" />
+                        <xsl:value-of select="sex" />
                     </性别>
                     <专业>
-                        <xsl:value-of select="jw:major" />
+                        <xsl:value-of select="major" />
                     </专业>
                 </student>
             </xsl:for-each>

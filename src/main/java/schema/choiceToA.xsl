@@ -1,22 +1,22 @@
 <?xml version= "1.0" encoding= "gb2312"?>
 
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:jw="http://jw.nju.edu.cn/schema">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     <xsl:output method="xml" encoding="gb2312" />
     <xsl:template match="/">
         <xsl:apply-templates />
     </xsl:template>
-    <xsl:template match="jw:Choices">
+    <xsl:template match="Choices">
         <Choices>
-            <xsl:for-each select="jw:choice">
+            <xsl:for-each select="choice">
                 <choice>
                     <Ñ§ºÅ>
-                        <xsl:value-of select="jw:sid" />
+                        <xsl:value-of select="sid" />
                     </Ñ§ºÅ>
                     <¿Î³Ì±àºÅ>
-                        <xsl:value-of select="jw:cid" />
+                        <xsl:value-of select="cid" />
                     </¿Î³Ì±àºÅ>
                     <³É¼¨>
-                        <xsl:value-of select="jw:score" />
+                        <xsl:value-of select="score" />
                     </³É¼¨>
                 </choice>
             </xsl:for-each>

@@ -38,6 +38,18 @@
             <artifactId>jaxb-runtime</artifactId>
             <version>2.3.0-b170127.1453</version>
         </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.25</version>
+        </dependency>
+
+        <dependency>
+            <groupId>dom4j</groupId>
+            <artifactId>dom4j-core</artifactId>
+            <version>1.4-dev-8</version>
+        </dependency>
     </dependencies>
 
 </project>
