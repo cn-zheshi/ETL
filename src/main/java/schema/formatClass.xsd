@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://jw.nju.edu.cn/schema"
+    xmlns:tns="http://jw.nju.edu.cn/schema"
+    elementFormDefault="qualified">
+
+    <simpleType name="classIdType">
+        <restriction base="string">
+            <length value="9" />
+        </restriction>
+    </simpleType>
+
+    <complexType name="ClassesType">
+        <sequence maxOccurs="unbounded" minOccurs="1">
+            <element name="class" type="tns:classType" />
+          </sequence>
+    </complexType>
+
+    <complexType name="classType">
+        <sequence>
+            <element name="id" type="tns:classIdType" />
+            <element name="name" type="string" />
+            <element name="time" type="unsignedByte" />
+            <element name="score" type="unsignedByte" />
+            <element name="teacher" type="string" />
+            <element name="location" type="string" />
+        </sequence>
+    </complexType>
+
+    <element name="Classes" type="tns:ClassesType"></element>
+</schema>

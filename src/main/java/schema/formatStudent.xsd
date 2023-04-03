@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://jw.nju.edu.cn/schema"
+        xmlns:tns="http://jw.nju.edu.cn/schema" elementFormDefault="qualified">
+
+
+    <element name="Students" type="tns:studentListType" />
+
+    <simpleType name="studentIdType">
+        <restriction base="string">
+            <maxLength value="9"/>
+        </restriction>
+    </simpleType>
+
+    <simpleType name="sexType">
+        <restriction base="string">
+            <pattern value="(0|1)" />
+        </restriction>
+    </simpleType>
+
+    <complexType name="studentType">
+        <sequence>
+            <element name="id" type="tns:studentIdType" />
+            <element name="name" type="string" />
+            <element name="sex" type="tns:sexType" />
+            <element name="major" type="string" />
+        </sequence>
+    </complexType>
+
+    <complexType name="studentListType">
+        <sequence minOccurs="1">
+            <element name="student" type="tns:studentType"></element>
+        </sequence>
+    </complexType>
+
+</schema>

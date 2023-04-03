@@ -25,19 +25,21 @@ public class Trans {
 				Transformer transformer = transformerFactory
 						.newTransformer(style);
 				transformer.setOutputProperty(
-						javax.xml.transform.OutputKeys.ENCODING, "utf-8"); 
+						javax.xml.transform.OutputKeys.ENCODING, "utf-8");
 				transformer.transform(source, result);
 				content.setFormUrl(xmlPath);
 				content.setToContent(byteRep.toString());
 				content.setTranformUrl(xslPath);
         } catch (Exception e) {
             //TODO: handle exception
+            e.printStackTrace();
         }
         return content;
     }
     public static void outPut(Content content,String filePath){
         try {
             BufferedWriter bw=new BufferedWriter(new FileWriter(filePath));
+            System.out.println(content.getToContent());
             bw.write(content.getToContent());
             bw.close();
         } catch (Exception e) {

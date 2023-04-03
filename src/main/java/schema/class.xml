@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="gb2312"?>
+<Classes xmlns="http://jw.nju.edu.cn/schema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://jw.nju.edu.cn/schema formatClass.xsd">
+    <class>
+        <id>123456789</id>
+        <name>class1</name>
+        <time>0</time>
+        <score>2</score>
+        <teacher>teacher</teacher>
+        <location>A</location>
+    </class>
+
+    <class>
+        <id>223456789</id>
+        <name>class2</name>
+        <time>0</time>
+        <score>2</score>
+        <teacher>teacher2</teacher>
+        <location>B</location>
+    </class>
+</Classes>

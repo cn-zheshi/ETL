@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="http://jw.nju.edu.cn/schemaA"
+        xmlns:tns="http://jw.nju.edu.cn/schemaA"
+        elementFormDefault="qualified">
+
+    <simpleType name="idType">
+        <restriction base="string">
+            <pattern value="([0-9]*)" />
+        </restriction>
+    </simpleType>
+
+    <complexType name="ClassesType">
+        <sequence maxOccurs="unbounded" minOccurs="0">
+            <element name="class" type="tns:classType" />
+        </sequence>
+    </complexType>
+
+    <complexType name="classType">
+        <sequence>
+            <element name="课程编号" type="tns:idType" />
+            <element name="课程名称" type="string" />
+            <element name="学分" type="string" />
+            <element name="授课老师" type="string" />
+            <element name="授课地点" type="string" />
+        </sequence>
+    </complexType>
+
+    <element name="Classes" type="tns:ClassesType"></element>
+</schema>
