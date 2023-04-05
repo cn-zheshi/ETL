@@ -6,7 +6,7 @@
     </xsl:template>
     <xsl:template match="Classes">
         <Classes>
-            <xsl:for-each select="classe">
+            <xsl:for-each select="class">
                 <class>
                     <id>
                         <xsl:value-of select="¿Î³Ì±àºÅ"/>
