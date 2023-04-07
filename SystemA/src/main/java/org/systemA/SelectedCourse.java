@@ -1,6 +1,6 @@
 package org.systemA;
 
-import util.Styles;
+import org.systemA.util.Styles;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;

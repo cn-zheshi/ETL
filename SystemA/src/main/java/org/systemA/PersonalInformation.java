@@ -1,6 +1,6 @@
 package org.systemA;
 
-import util.Styles;
+import org.systemA.util.Styles;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,7 +9,6 @@ import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
 public class PersonalInformation extends JFrame implements ActionListener {
     // 数据库连接、sql语句、结果集等对象

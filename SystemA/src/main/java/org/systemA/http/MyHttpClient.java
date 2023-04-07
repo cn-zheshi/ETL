@@ -1,6 +1,4 @@
-package http;
-
-import org.apache.commons.httpclient.HttpClient;
+package org.systemA.http;
 
 public class MyHttpClient {
     // TODO: 请求接口

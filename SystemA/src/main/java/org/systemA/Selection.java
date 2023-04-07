@@ -1,5 +1,5 @@
 package org.systemA;
-import util.Styles;
+import org.systemA.util.Styles;
 
 import javax.swing.*;                             // 引入swing工具包进行GUI的设计
 import java.awt.*;					             // 引入awt工具包

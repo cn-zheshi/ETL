@@ -1,4 +1,6 @@
-import http.MyHttpServer;
+package org.systemA;
+
+import org.systemA.http.MyHttpServer;
 import org.systemA.Login;
 
 import java.io.IOException;

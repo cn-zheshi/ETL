@@ -1,4 +1,4 @@
-package http;
+package org.systemA.http;
 
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.httpclient.*;
@@ -100,7 +100,7 @@ public class HttpClientUtil {
         return res;
     }
 
-//    public static void main(String[] args) {
+//    public static void org.systemA.main(String[] args) {
 //        System.out.println(doGet("http://tcc.taobao.com/cc/json/mobile_tel_segment.htm?tel=13026194071", "GBK"));
 //        System.out.println("-----------分割线------------");
 //        System.out.println("-----------分割线------------");

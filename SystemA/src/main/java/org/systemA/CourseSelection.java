@@ -1,19 +1,15 @@
 package org.systemA;
 
-import util.Styles;
+import org.systemA.util.Styles;
 
 import javax.swing.*;
-import javax.swing.event.CellEditorListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.EventObject;
 
 // 本院系的课程信息，选课和退选按钮，返回按钮
 

@@ -1,4 +1,4 @@
-package util;
+package org.systemA.util;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -24,7 +24,7 @@ public class XMLParser {
         SAXReader saxReader = new SAXReader();
         Document document = null;
         try {
-            document = saxReader.read(new FileReader(new File("src/main/java/schema/choiceA.xml")));
+            document = saxReader.read(new FileReader(new File("src/org.systemA.main/java/schema/choiceA.xml")));
         } catch (DocumentException e) {
             e.printStackTrace();
         } catch (FileNotFoundException e) {
