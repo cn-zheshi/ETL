@@ -1,15 +1,17 @@
-package org.systemA;
-import org.systemA.util.Styles;
+package org.systemA.ui.panel;
 
-import javax.swing.*;                             // 引入swing工具包进行GUI的设计
-import java.awt.*;					             // 引入awt工具包
+import org.systemA.Selection;
+import org.systemA.ui.UiConsts;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 
-import java.sql.*;                              // 数据库包
+import java.sql.*;
 /**
  * 登录界面 包括学生和管理员登录
  */
-public class Login extends JFrame implements ActionListener {
+public class LoginPanel extends JPanel implements ActionListener {
     static Connection ct = null;
     PreparedStatement ps = null;
     ResultSet rs = null;
@@ -23,14 +25,38 @@ public class Login extends JFrame implements ActionListener {
     JButton jb_1, jb_2, jb_3 = null;            // 设置三个单击按钮（登录、重置、退出）
 
 
-    public static void main(String[] args) {
-        // 创建登录界面
-        Login login = new Login();
-        ct = AConnection.getConnection();
+    public LoginPanel()
+    {
+        super(true);
+        initialize();
+        addComponent();
     }
 
-    public Login()
-    {
+    /**
+     * 初始化
+     */
+    private void initialize() {
+        this.setBackground(UiConsts.MAIN_BACK_COLOR);
+        this.setLayout(new BorderLayout());
+//        ct = AConnection.getConnection();
+    }
+
+    /**
+     * 为面板添加组件
+     */
+    private void addComponent() {
+        this.add(getCenterPanel(), BorderLayout.CENTER);
+    }
+
+    /**
+     * 面板中部
+     *
+     * @return
+     */
+    private JPanel getCenterPanel() {
+        JPanel centerPanel = new JPanel();
+        jlb_1 = new JLabel("用户名");
+        centerPanel.add(jlb_1);
         jp_1 = new JPanel();
         jp_2 = new JPanel();
         jp_3 = new JPanel();
@@ -52,34 +78,24 @@ public class Login extends JFrame implements ActionListener {
         jb_1 = new JButton("登录");
         jb_2 = new JButton("重置");
         jb_3 = new JButton("退出");
-
         jb_1.addActionListener(this);
         jb_2.addActionListener(this);
         jb_3.addActionListener(this);
-
         jp_1.add(jlb_1);
         jp_1.add(jtf);
-
         jp_2.add(jlb_2);
         jp_2.add(jpf);
-
         jp_3.add(jlb_3);
         jp_3.add(jrb_1);
         jp_3.add(jrb_2);
-
         jp_4.add(jb_1);
         jp_4.add(jb_2);
         jp_4.add(jb_3);
-
-        this.add(jp_1);
-        this.add(jp_2);
-        this.add(jp_3);
-        this.add(jp_4);
-
-        this.setLayout(new GridLayout(4,1));
-
-        Styles.setStyle(this);
-
+        centerPanel.add(jp_1);
+        centerPanel.add(jp_2);
+        centerPanel.add(jp_3);
+        centerPanel.add(jp_4);
+        return centerPanel;
     }
 
     public void clear() {
@@ -109,7 +125,6 @@ public class Login extends JFrame implements ActionListener {
                         if(user_name.equals(jtf.getText()) && password.equals(String.valueOf(jpf.getPassword()))){
                             JOptionPane.showMessageDialog(null, "登陆成功！", "提示消息", JOptionPane.WARNING_MESSAGE);
                             clear();
-                            dispose();			// 关闭当前登录界面
                             new Selection(user_name);	// 打开学生选课界面
                         }else if(jtf.getText().isEmpty() && String.valueOf(jpf.getPassword()).isEmpty()){
                             JOptionPane.showMessageDialog(null, "请输入用户名和密码！", "提示消息", JOptionPane.WARNING_MESSAGE);

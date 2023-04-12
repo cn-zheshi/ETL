@@ -4,6 +4,7 @@ import javax.swing.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.systemA.ui.UiConsts;
+import org.systemA.ui.panel.LoginPanel;
 import org.systemA.ui.panel.ToolBarPanel;
 
 import java.awt.*;
@@ -18,6 +19,7 @@ public class App {
     private JFrame frame;
 
     public static JPanel mainPanelCenter;
+    public static LoginPanel loginPanel;
 
     /**
      * 程序入口main
@@ -65,11 +67,13 @@ public class App {
         mainPanel.setLayout(new BorderLayout());
 
         ToolBarPanel toolbar = new ToolBarPanel();
-
+        loginPanel = new LoginPanel();
         mainPanel.add(toolbar, BorderLayout.WEST);
 
         mainPanelCenter = new JPanel(true);
         mainPanelCenter.setLayout(new BorderLayout());
+        mainPanelCenter.add(loginPanel, BorderLayout.CENTER);
+
         mainPanel.add(mainPanelCenter, BorderLayout.CENTER);
         frame.add(mainPanel);
         // 关闭窗口时退出程序
