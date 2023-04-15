@@ -1,9 +1,7 @@
-package org.systemA;
+package org.systemA.sql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
 public class AConnection {
     public static Connection getConnection() {

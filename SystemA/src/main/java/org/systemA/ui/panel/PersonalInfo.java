@@ -1,32 +1,48 @@
-package org.systemA;
+package org.systemA.ui.panel;
 
-import org.systemA.util.Styles;
+import org.systemA.sql.AConnection;
+import org.systemA.ui.UiConsts;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-public class PersonalInformation extends JFrame implements ActionListener {
+public class PersonalInfo extends JPanel {
     // 数据库连接、sql语句、结果集等对象
-    static Connection ct = null;
-    PreparedStatement ps = null;
-    ResultSet rs = null;
+    public static Connection ct = null;
+    public static PreparedStatement ps = null;
+    public static ResultSet rs = null;
 
     // 显示个人信息：学号, 姓名, 性别, 院系, 关联账户
-    JLabel jl_1, jl_2, jl_3, jl_4, jl_5 = null;
-    // 返回按钮
-    JButton jb_1 = null;
-    String username = null;
-    public PersonalInformation(String username)
+    public static JLabel jl_1, jl_2, jl_3, jl_4, jl_5 = null;
+    public static String user = null;
+    public PersonalInfo(String username)
     {
-        this.username = username;
+        super(true);
+        initialize();
+        setContent(username);
+        addComponent();
+    }
+
+    private void initialize() {
+        this.setBackground(UiConsts.MAIN_BACK_COLOR);
+        this.setLayout(new BorderLayout());
+    }
+
+    private void addComponent() {
         // 设置布局
         this.setLayout(new GridLayout(6, 1));
-        // 显示个人信息
+        this.add(jl_1);
+        this.add(jl_2);
+        this.add(jl_3);
+        this.add(jl_4);
+        this.add(jl_5);
+    }
+
+    public static void setContent(String username) {
+        user = username;
         ct = AConnection.getConnection();
         try {
             ps = ct.prepareStatement("select * from 学生 where 关联账户 = ?");
@@ -43,21 +59,6 @@ public class PersonalInformation extends JFrame implements ActionListener {
         catch (Exception e) {
             e.printStackTrace();
         }
-        this.add(jl_1);
-        this.add(jl_2);
-        this.add(jl_3);
-        this.add(jl_4);
-        this.add(jl_5);
-        // 返回按钮
-        jb_1 = new JButton("返回");
-        this.add(jb_1);
-        jb_1.addActionListener(this);
-        Styles.setStyle(this);
     }
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == jb_1) {
-            this.dispose();
-            new Selection(this.username);
-        }
-    }
+
 }

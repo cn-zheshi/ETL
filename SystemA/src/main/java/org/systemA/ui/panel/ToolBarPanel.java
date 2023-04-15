@@ -1,6 +1,7 @@
 package org.systemA.ui.panel;
 
 import org.systemA.App;
+import org.systemA.ViewCourse;
 import org.systemA.ui.UiConsts;
 import org.systemA.ui.component.MyIconButton;
 import org.systemA.util.PropertyUtil;
@@ -14,8 +15,11 @@ import java.awt.*;
  * @author Bob
  */
 public class ToolBarPanel extends JPanel {
-
     private static final long serialVersionUID = 1L;
+    private static MyIconButton buttonPersonalInfo; // 个人信息
+    private static MyIconButton buttonViewCourse; // 查看课程
+    private static MyIconButton buttonChooseCourse; // 选择课程
+    private static MyIconButton buttonDeleteCourse; // 退选课程
 
 
     /**
@@ -24,14 +28,13 @@ public class ToolBarPanel extends JPanel {
     public ToolBarPanel() {
         initialize();
         addButtion();
-        addListener();
     }
 
     /**
      * 初始化
      */
     private void initialize() {
-        Dimension preferredSize = new Dimension(48, UiConsts.MAIN_WINDOW_HEIGHT);
+        Dimension preferredSize = new Dimension(60, UiConsts.MAIN_WINDOW_HEIGHT);
         this.setPreferredSize(preferredSize);
         this.setMaximumSize(preferredSize);
         this.setMinimumSize(preferredSize);
@@ -43,7 +46,6 @@ public class ToolBarPanel extends JPanel {
      * 添加工具按钮
      */
     private void addButtion() {
-
         JPanel panelUp = new JPanel();
         panelUp.setBackground(UiConsts.TOOL_BAR_BACK_COLOR);
         panelUp.setLayout(new FlowLayout(-2, -2, -4));
@@ -60,5 +62,67 @@ public class ToolBarPanel extends JPanel {
      * 为各按钮添加事件动作监听
      */
     private void addListener() {
+        buttonPersonalInfo.addActionListener(e -> {
+            buttonPersonalInfo.setIcon(UiConsts.ICON_PERSONAL_INFO_HOVER);
+            buttonViewCourse.setIcon(UiConsts.ICON_VIEW_COURSE);
+            buttonChooseCourse.setIcon(UiConsts.ICON_CHOOSE_COURSE);
+            buttonDeleteCourse.setIcon(UiConsts.ICON_DROP_COURSE);
+            App.mainPanelCenter.removeAll();
+            PersonalInfo personalInfo = new PersonalInfo(App.user);
+            App.mainPanelCenter.add(personalInfo, BorderLayout.CENTER);
+            App.mainPanelCenter.updateUI();
+        });
+        buttonViewCourse.addActionListener(e -> {
+            buttonPersonalInfo.setIcon(UiConsts.ICON_PERSONAL_INFO);
+            buttonViewCourse.setIcon(UiConsts.ICON_VIEW_COURSE_HOVER);
+            buttonChooseCourse.setIcon(UiConsts.ICON_CHOOSE_COURSE);
+            buttonDeleteCourse.setIcon(UiConsts.ICON_DROP_COURSE);
+            App.mainPanelCenter.removeAll();
+            ViewCourse viewCourse = new ViewCourse(App.user);
+            App.mainPanelCenter.add(viewCourse, BorderLayout.CENTER);
+            App.mainPanelCenter.updateUI();
+        });
     }
+
+
+    /**
+     * 添加并显示按钮
+     */
+    public void showButtonForStudent() {
+        // TODO
+        this.removeAll();
+        // 个人信息按钮
+        buttonPersonalInfo = new MyIconButton(UiConsts.ICON_PERSONAL_INFO_HOVER, UiConsts.ICON_PERSONAL_INFO_HOVER,
+                UiConsts.ICON_PERSONAL_INFO, PropertyUtil.getProperty("ds.ui.status.title"));
+        // 查看课程按钮
+        buttonViewCourse = new MyIconButton(UiConsts.ICON_VIEW_COURSE_HOVER, UiConsts.ICON_VIEW_COURSE_HOVER,
+                UiConsts.ICON_VIEW_COURSE, PropertyUtil.getProperty("ds.ui.status.title"));
+        // 选择课程按钮
+        buttonChooseCourse = new MyIconButton(UiConsts.ICON_CHOOSE_COURSE_HOVER, UiConsts.ICON_CHOOSE_COURSE_HOVER,
+                UiConsts.ICON_CHOOSE_COURSE, PropertyUtil.getProperty("ds.ui.status.title"));
+        // 退选课程按钮
+        buttonDeleteCourse = new MyIconButton(UiConsts.ICON_DROP_COURSE_HOVER, UiConsts.ICON_DROP_COURSE_HOVER,
+                UiConsts.ICON_DROP_COURSE, PropertyUtil.getProperty("ds.ui.status.title"));
+
+        JPanel panelUp = new JPanel();
+        panelUp.setBackground(UiConsts.TOOL_BAR_BACK_COLOR);
+        panelUp.setLayout(new FlowLayout(-2, -2, -4));
+        JPanel panelDown = new JPanel();
+        panelDown.setBackground(UiConsts.TOOL_BAR_BACK_COLOR);
+        panelDown.setLayout(new BorderLayout(0, 0));
+
+        panelUp.add(buttonPersonalInfo);
+        panelUp.add(buttonViewCourse);
+        panelUp.add(buttonChooseCourse);
+        panelUp.add(buttonDeleteCourse);
+        System.out.println(panelUp.getComponentCount());
+
+        this.add(panelUp);
+        this.add(panelDown);
+
+        addListener();
+
+
+    }
+
 }

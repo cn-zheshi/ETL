@@ -4,7 +4,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-import org.systemA.AConnection;
+import org.systemA.sql.AConnection;
 
 import java.io.File;
 import java.io.FileNotFoundException;

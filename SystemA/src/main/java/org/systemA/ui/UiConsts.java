@@ -68,7 +68,44 @@ public class UiConsts {
      */
     public final static ImageIcon ICON_DATA_SYNC = new ImageIcon(
             App.class.getResource("/icon/system.png"));
-    // 样式布局相关
+
+    /**
+     * 个人信息图标
+     */
+    public  final static ImageIcon ICON_PERSONAL_INFO = new ImageIcon(
+            App.class.getResource("/icon/personal_info.png"));
+
+    public  final static ImageIcon ICON_PERSONAL_INFO_HOVER = new ImageIcon(
+            App.class.getResource("/icon/personal_info_hover.png"));
+
+
+    /**
+     * 查看课程图标
+     */
+    public  final static ImageIcon ICON_VIEW_COURSE = new ImageIcon(
+            App.class.getResource("/icon/view_course.png"));
+
+    public  final static ImageIcon ICON_VIEW_COURSE_HOVER = new ImageIcon(
+            App.class.getResource("/icon/view_course_hover.png"));
+
+    /**
+     * 选择课程图标
+     */
+    public final static ImageIcon ICON_CHOOSE_COURSE = new ImageIcon(
+            App.class.getResource("/icon/choose_course.png"));
+
+    public final static ImageIcon ICON_CHOOSE_COURSE_HOVER = new ImageIcon(
+            App.class.getResource("/icon/choose_course_hover.png"));
+
+    /**
+     * 退选课程图标
+     */
+    public final static ImageIcon ICON_DROP_COURSE = new ImageIcon(
+            App.class.getResource("/icon/drop_course.png"));
+
+    public final static ImageIcon ICON_DROP_COURSE_HOVER = new ImageIcon(
+            App.class.getResource("/icon/drop_course_hover.png"));
+
     /**
      * 主面板水平间隔
      */

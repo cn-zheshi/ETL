@@ -1,5 +1,6 @@
 package org.systemA;
 
+import org.systemA.sql.AConnection;
 import org.systemA.util.Styles;
 
 import javax.swing.*;
@@ -15,7 +16,7 @@ import java.sql.ResultSet;
 // 本院系已选课程：课程编号, 课程名称, 学分, 授课老师, 授课地点, 成绩
 // TODO: 跨院系已选课程
 
-public class SelectedCourse extends JFrame implements ActionListener {
+public class ViewCourse extends JFrame implements ActionListener {
     // 数据库连接、sql语句、结果集等对象
     static Connection ct = null;
     PreparedStatement ps = null;
@@ -32,7 +33,7 @@ public class SelectedCourse extends JFrame implements ActionListener {
     JComboBox<String> jComboBox = new JComboBox<String>();
     JButton selectButton = new JButton("退选");
 
-    public SelectedCourse(String username) {
+    public ViewCourse(String username) {
         this.username = username;
         this.setLayout(new GridLayout(3, 1));
         jb_1 = new JButton("返回");
@@ -122,7 +123,7 @@ public class SelectedCourse extends JFrame implements ActionListener {
                     JOptionPane.showMessageDialog(null, "退选失败");
                 }
                 this.dispose();
-                new SelectedCourse(this.username);
+                new ViewCourse(this.username);
             }
             catch (Exception e1) {
                 e1.printStackTrace();

@@ -1,12 +1,12 @@
 package org.systemA.ui.panel;
 
 import org.systemA.Selection;
+import org.systemA.sql.AConnection;
 import org.systemA.ui.UiConsts;
-
+import org.systemA.App;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-
 import java.sql.*;
 /**
  * 登录界面 包括学生和管理员登录
@@ -38,7 +38,7 @@ public class LoginPanel extends JPanel implements ActionListener {
     private void initialize() {
         this.setBackground(UiConsts.MAIN_BACK_COLOR);
         this.setLayout(new BorderLayout());
-//        ct = AConnection.getConnection();
+        ct = AConnection.getConnection();
     }
 
     /**
@@ -55,8 +55,6 @@ public class LoginPanel extends JPanel implements ActionListener {
      */
     private JPanel getCenterPanel() {
         JPanel centerPanel = new JPanel();
-        jlb_1 = new JLabel("用户名");
-        centerPanel.add(jlb_1);
         jp_1 = new JPanel();
         jp_2 = new JPanel();
         jp_3 = new JPanel();
@@ -91,10 +89,14 @@ public class LoginPanel extends JPanel implements ActionListener {
         jp_4.add(jb_1);
         jp_4.add(jb_2);
         jp_4.add(jb_3);
+        // 设置布局
+        centerPanel.setLayout(new GridLayout(4, 1));
         centerPanel.add(jp_1);
         centerPanel.add(jp_2);
         centerPanel.add(jp_3);
         centerPanel.add(jp_4);
+
+
         return centerPanel;
     }
 
@@ -124,8 +126,11 @@ public class LoginPanel extends JPanel implements ActionListener {
                         String identity = rs.getString("权限");
                         if(user_name.equals(jtf.getText()) && password.equals(String.valueOf(jpf.getPassword()))){
                             JOptionPane.showMessageDialog(null, "登陆成功！", "提示消息", JOptionPane.WARNING_MESSAGE);
+                            // 设置当前用户
+                            App.user = user_name;
                             clear();
-                            new Selection(user_name);	// 打开学生选课界面
+                            // 显示功能栏，隐藏登录界面
+                            App.changePanel();
                         }else if(jtf.getText().isEmpty() && String.valueOf(jpf.getPassword()).isEmpty()){
                             JOptionPane.showMessageDialog(null, "请输入用户名和密码！", "提示消息", JOptionPane.WARNING_MESSAGE);
                         }else if(jtf.getText().isEmpty()){

@@ -1,4 +1,5 @@
 package org.systemA;
+import org.systemA.ui.panel.PersonalInfo;
 import org.systemA.util.Styles;
 
 import javax.swing.*;                             // 引入swing工具包进行GUI的设计
@@ -37,10 +38,10 @@ public class Selection extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == jb_1) {
             this.dispose();
-            new PersonalInformation(this.username);
+            new PersonalInfo(this.username);
         } else if (e.getSource() == jb_2) {
             this.dispose();
-            new SelectedCourse(this.username);
+            new ViewCourse(this.username);
         } else if (e.getSource() == jb_3) {
             this.dispose();
             new CourseSelection(this.username);

@@ -1,5 +1,6 @@
 package org.systemA;
 
+import org.systemA.sql.AConnection;
 import org.systemA.util.Styles;
 
 import javax.swing.*;

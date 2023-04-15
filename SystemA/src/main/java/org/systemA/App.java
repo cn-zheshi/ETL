@@ -21,6 +21,10 @@ public class App {
     public static JPanel mainPanelCenter;
     public static LoginPanel loginPanel;
 
+    public static ToolBarPanel toolBar;
+
+    public static String user;
+
     /**
      * 程序入口main
      */
@@ -66,9 +70,9 @@ public class App {
         mainPanel.setBackground(Color.white);
         mainPanel.setLayout(new BorderLayout());
 
-        ToolBarPanel toolbar = new ToolBarPanel();
+        toolBar = new ToolBarPanel();
         loginPanel = new LoginPanel();
-        mainPanel.add(toolbar, BorderLayout.WEST);
+        mainPanel.add(toolBar, BorderLayout.WEST);
 
         mainPanelCenter = new JPanel(true);
         mainPanelCenter.setLayout(new BorderLayout());
@@ -81,5 +85,13 @@ public class App {
         logger.info("==================AppInitEnd");
     }
 
+
+    // 更新主面板中间的内容
+    public static void changePanel() {
+        mainPanelCenter.removeAll();
+        mainPanelCenter.updateUI();
+        toolBar.showButtonForStudent();
+        toolBar.updateUI();
+    }
 
 }
