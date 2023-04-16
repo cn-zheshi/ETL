@@ -22,6 +22,7 @@ public class ToolBarPanel extends JPanel {
     private static MyIconButton buttonDeleteCourse; // 退选课程
 
 
+
     /**
      * 构造
      */
@@ -68,8 +69,8 @@ public class ToolBarPanel extends JPanel {
             buttonChooseCourse.setIcon(UiConsts.ICON_CHOOSE_COURSE);
             buttonDeleteCourse.setIcon(UiConsts.ICON_DROP_COURSE);
             App.mainPanelCenter.removeAll();
-            PersonalInfo personalInfo = new PersonalInfo(App.user);
-            App.mainPanelCenter.add(personalInfo, BorderLayout.CENTER);
+            App.personalInfo = new PersonalInfo(App.user);
+            App.mainPanelCenter.add(App.personalInfo, BorderLayout.CENTER);
             App.mainPanelCenter.updateUI();
         });
         buttonViewCourse.addActionListener(e -> {
@@ -78,8 +79,8 @@ public class ToolBarPanel extends JPanel {
             buttonChooseCourse.setIcon(UiConsts.ICON_CHOOSE_COURSE);
             buttonDeleteCourse.setIcon(UiConsts.ICON_DROP_COURSE);
             App.mainPanelCenter.removeAll();
-            ViewCourse viewCourse = new ViewCourse(App.user);
-            App.mainPanelCenter.add(viewCourse, BorderLayout.CENTER);
+            App.viewCourse = new ViewCourse(App.user);
+            App.mainPanelCenter.add(App.viewCourse, BorderLayout.CENTER);
             App.mainPanelCenter.updateUI();
         });
     }
@@ -89,7 +90,6 @@ public class ToolBarPanel extends JPanel {
      * 添加并显示按钮
      */
     public void showButtonForStudent() {
-        // TODO
         this.removeAll();
         // 个人信息按钮
         buttonPersonalInfo = new MyIconButton(UiConsts.ICON_PERSONAL_INFO_HOVER, UiConsts.ICON_PERSONAL_INFO_HOVER,

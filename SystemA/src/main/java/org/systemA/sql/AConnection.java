@@ -24,4 +24,13 @@ public class AConnection {
     public static void main(String[] args) {
         AConnection.getConnection();
     }
+
+    public static void closeConnection() {
+        Connection con = AConnection.getConnection();
+        try {
+            con.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

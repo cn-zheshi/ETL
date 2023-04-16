@@ -61,7 +61,6 @@ public class ViewCourse extends JPanel {
         labelTitle.setFont(UiConsts.FONT_TITLE);
         labelTitle.setForeground(UiConsts.TOOL_BAR_BACK_COLOR);
         panelUp.add(labelTitle);
-
         return panelUp;
     }
 
@@ -69,9 +68,7 @@ public class ViewCourse extends JPanel {
         JPanel panelCenter = new JPanel();
         panelCenter.setBackground(UiConsts.MAIN_BACK_COLOR);
         panelCenter.setLayout(new GridLayout(1, 1));
-
         panelCenter.add(getPanelGridBakFrom());
-
         return panelCenter;
     }
 
@@ -85,8 +82,6 @@ public class ViewCourse extends JPanel {
         // 本院系已选课程控制面板 panelFromControl
         JPanel panelFromControl = new JPanel();
         panelFromControl.setLayout(new GridLayout(1, 2));
-        JPanel panelFromTable = new JPanel();
-        panelFromTable.setLayout(new BorderLayout());
 
         JPanel panelFromControlLeft = new JPanel();
         panelFromControlLeft.setLayout(new FlowLayout(FlowLayout.LEFT, UiConsts.MAIN_H_GAP, 5));
@@ -107,14 +102,11 @@ public class ViewCourse extends JPanel {
         jt_1.setRowHeight(31);
         jt_1.setGridColor(UiConsts.TABLE_LINE_COLOR);
         jt_1.setSelectionBackground(UiConsts.TOOL_BAR_BACK_COLOR);
-
         JScrollPane panelScroll = new JScrollPane(jt_1);
         panelScroll.setBackground(UiConsts.MAIN_BACK_COLOR);
-
         // 本院系课程 标题和表格加入到面板
         panelGridBakFrom.add(panelFromControl, BorderLayout.NORTH);
         panelGridBakFrom.add(panelScroll, BorderLayout.CENTER);
-
         return panelGridBakFrom;
     }
 
@@ -125,6 +117,7 @@ public class ViewCourse extends JPanel {
         // 获取本院系表格数据
         ct = AConnection.getConnection();
         try {
+            model_1 = new DefaultTableModel(tableTitles, 0);
             // 获取学生编号
             ps = ct.prepareStatement("select * from 学生 where 关联账户 = ?");
             ps.setString(1, App.user);
@@ -158,8 +151,6 @@ public class ViewCourse extends JPanel {
             tableDatas = new Object[model_1.getRowCount()][model_1.getColumnCount()];
             for (int i = 0; i < model_1.getRowCount(); i++) {
                 for (int j = 0; j < model_1.getColumnCount(); j++) {
-                    System.out.println("i: " + i + ", j: " + j);
-                    System.out.println("model_1.getValueAt(i, j): " + model_1.getValueAt(i, j));
                     tableDatas[i][j] = model_1.getValueAt(i, j);
                 }
             }

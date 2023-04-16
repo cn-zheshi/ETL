@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.systemA.http.MyHttpServer;
 import org.systemA.ui.UiConsts;
 import org.systemA.ui.panel.LoginPanel;
+import org.systemA.ui.panel.PersonalInfo;
 import org.systemA.ui.panel.ToolBarPanel;
 
 import java.awt.*;
@@ -25,6 +26,10 @@ public class App {
     public static ToolBarPanel toolBar;
 
     public static String user;
+
+    public static PersonalInfo personalInfo;
+
+    public static ViewCourse viewCourse;
 
     /**
      * 程序入口main
