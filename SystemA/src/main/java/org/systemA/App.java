@@ -76,15 +76,12 @@ public class App {
         JPanel mainPanel = new JPanel(true);
         mainPanel.setBackground(Color.white);
         mainPanel.setLayout(new BorderLayout());
-
         toolBar = new ToolBarPanel();
         loginPanel = new LoginPanel();
         mainPanel.add(toolBar, BorderLayout.WEST);
-
         mainPanelCenter = new JPanel(true);
         mainPanelCenter.setLayout(new BorderLayout());
         mainPanelCenter.add(loginPanel, BorderLayout.CENTER);
-
         mainPanel.add(mainPanelCenter, BorderLayout.CENTER);
         frame.add(mainPanel);
         // 关闭窗口时退出程序

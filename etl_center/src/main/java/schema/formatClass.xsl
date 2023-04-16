@@ -18,19 +18,10 @@
                         <xsl:value-of select="课程名称"/>
                         <xsl:value-of select="Cnm"/>
                     </name>
-                    <xsl:choose>
-                        <xsl:when test="./Cpt=''">
-                            <score>
-                                <xsl:value-of select="学分"/>
-                            </score>
-                        </xsl:when>
-                        <xsl:when test="./Cpt!=''">
-                            <score>
-                                <xsl:value-of select="Cpt"/>
-                            </score>
-                        </xsl:when>
-                    </xsl:choose>
-
+                    <score>
+                        <xsl:value-of select="学分"/>
+                        <xsl:value-of select="Cpt"/>
+                    </score>
                     <teacher>
                         <xsl:value-of select="授课老师"/>
                         <xsl:value-of select="老师"/>

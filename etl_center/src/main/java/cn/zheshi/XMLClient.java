@@ -93,16 +93,11 @@ public class XMLClient {
         //TODO:请求所有学生信息
         return "test";
     }
-    @RequestMapping("/getAllClasses")
-    public String getAllClasses(){
-        //TODO:请求所有课程信息
-        return "test";
-    }
-    @RequestMapping("/getAllChoices")
-    public String getAllChoices(@RequestParam("from") String from, @RequestParam("to") String to, @RequestParam("studentNo") String studentNo){
-        // 获取这名学生在to服务器上的选课信息，可以请求多次
+    @RequestMapping("/getAllCourses")
+    public String getAllCourses(@RequestParam("from") String from, @RequestParam("to") String to, @RequestParam("studentNo") String studentNo){
+        // 获取to服务器上的所有课程信息
         String toUrl = getToUrl(to);
-        toUrl=toUrl+courseChosed + "?studentNo=" + studentNo;
+        toUrl=toUrl + courseSuffix + "?studentNo=" + studentNo;
         String toChoiceXML= null;
         try {
             toChoiceXML = HttpHelper.sendGet(toUrl);
@@ -112,5 +107,21 @@ public class XMLClient {
         String formatClassXML = Trans.doXsl(basePath+formatClass, toChoiceXML).getToContent();
         String fromClassXML=Trans.doXsl(basePath+transClass+from+suffix,formatClassXML).getToContent();
         return fromClassXML;
+    }
+
+    @RequestMapping("/getAllChoices")
+    public String getAllChoices(@RequestParam("from") String from, @RequestParam("to") String to, @RequestParam("studentNo") String studentNo) {
+        // 获取这名学生在to服务器上的所有选课信息
+        String toUrl = getToUrl(to);
+        toUrl=toUrl + choiceSuffix + "?studentNo=" + studentNo;
+        String toChoiceXML= null;
+        try {
+            toChoiceXML = HttpHelper.sendGet(toUrl);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String formatChoiceXML = Trans.doXsl(basePath+formatChoice, toChoiceXML).getToContent();
+        String fromChoiceXML=Trans.doXsl(basePath+transChoice+from+suffix,formatChoiceXML).getToContent();
+        return fromChoiceXML;
     }
 }

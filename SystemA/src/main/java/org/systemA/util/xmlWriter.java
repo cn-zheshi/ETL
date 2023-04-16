@@ -30,6 +30,23 @@ public class xmlWriter {
         return xml;
     }
 
+    public static String generateChoiceInfo(List<String[]> choices) {
+        String xml = null;
+        // 创建XML文档
+        Document document = DocumentHelper.createDocument();
+        Element root = document.addElement("Choices");
+
+        for (String[] choice : choices) {
+            Element classElement = root.addElement("choice");
+            classElement.addElement("学生编号").addText(choice[0]);
+            classElement.addElement("课程编号").addText(choice[1]);
+            classElement.addElement("成绩").addText(choice[2]);
+        }
+
+        xml = document.asXML();
+
+        return xml;
+    }
 }
 
 

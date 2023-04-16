@@ -30,9 +30,10 @@ public class ViewCourse extends JPanel {
     public static JComboBox<String> jComboBox = new JComboBox<String>();
     public static JButton selectButton = new JButton("退选");
     private static Object[][] tableDatas = null;
-    private static Object[] tableTitles = {"课程编号", "课程名称", "学分", "授课老师", "授课地点", "成绩"};
+    public static Object[] tableTitles = {"课程编号", "课程名称", "学分", "授课老师", "授课地点", "成绩"};
 
-    public static DefaultTableModel model_1 = new DefaultTableModel(tableTitles, 0);
+    public static DefaultTableModel model_1 = null;
+
 
     public ViewCourse(String username) {
         super(true);
@@ -137,7 +138,6 @@ public class ViewCourse extends JPanel {
                 while (rs_1.next()) {
                     String [] row_1 = {
                             rs_1.getString("课程编号"),
-                            rs.getString("学生编号"),
                             rs_1.getString("课程名称"),
                             rs_1.getString("学分"),
                             rs_1.getString("授课老师"),
@@ -147,7 +147,6 @@ public class ViewCourse extends JPanel {
                     model_1.addRow(row_1);
                 }
             }
-            // 写入tableDatas
             tableDatas = new Object[model_1.getRowCount()][model_1.getColumnCount()];
             for (int i = 0; i < model_1.getRowCount(); i++) {
                 for (int j = 0; j < model_1.getColumnCount(); j++) {
@@ -165,8 +164,18 @@ public class ViewCourse extends JPanel {
      */
     public static void initiateTableDataFromOther() {
         // 获取跨院系表格数据，追加到tableDatas
-        getChoiceCourses("A", "A", "20210001");
-
+        DefaultTableModel model_2 = getChoiceCourses("A", "A", "20210001");
+        tableDatas = new Object[model_1.getRowCount() + model_2.getRowCount()][model_1.getColumnCount()];
+        for (int i = 0; i < model_1.getRowCount(); i++) {
+            for (int j = 0; j < model_1.getColumnCount(); j++) {
+                tableDatas[i][j] = model_1.getValueAt(i, j);
+            }
+        }
+        for (int i = 0; i < model_2.getRowCount(); i++) {
+            for (int j = 0; j < model_2.getColumnCount(); j++) {
+                tableDatas[i + model_1.getRowCount()][j] = model_2.getValueAt(i, j);
+            }
+        }
     }
 
 //    public void actionPerformed(ActionEvent e) {
