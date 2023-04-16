@@ -24,9 +24,6 @@
                     <授课地点>
                         <xsl:value-of select="location" />
                     </授课地点>
-                    <共享>
-                        <xsl:value-of select="share" />
-                    </共享>
                 </class>
             </xsl:for-each>
         </Classes>

@@ -21,11 +21,16 @@ public class XMLClient {
     private static final String transChoice = "choiceTo";
     private static final String suffix = ".xsl";
     //TODO:设置三个服务器的url
-    private static final String serverAURL = "";
+    private static final String serverAURL = "http://localhost:5050";
     private static final String serverBURL = "";
     private static final String serverCURL = "";
     private static final String courseSuffix = "/course";
     private static final String choiceSuffix = "/select";
+
+    private static final String studentSuffix = "/student";
+
+    // 已选课程
+    private static final String courseChosed = "/courseChosed";
 
 
     private String getToUrl(String to){
@@ -64,6 +69,7 @@ public class XMLClient {
         String fromClassXML=Trans.doXsl(basePath+transClass+from+suffix,formatClassXML).getToContent();
         return fromClassXML;
     }
+    // 选课请求
     @RequestMapping("/classChoice")
     public String chooseClass(@RequestParam("from") String from,
                               @RequestParam("to") String to,
@@ -93,8 +99,21 @@ public class XMLClient {
         return "test";
     }
     @RequestMapping("/getAllChoices")
-    public String getAllChoices(){
-        //TODO:请求所有选课信息
-        return "test";
+    public String getAllChoices(@RequestParam("from") String from, @RequestParam("to") String to, @RequestParam("studentNo") String studentNo){
+        // 获取这名学生在to服务器上的选课信息，可以请求多次
+        String toUrl = getToUrl(to);
+        toUrl=toUrl+courseChosed + "?studentNo=" + studentNo;
+        String toChoiceXML= null;
+        try {
+            toChoiceXML = HttpHelper.sendGet(toUrl);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String formatClassXML = Trans.doXsl(basePath+formatClass, toChoiceXML).getToContent();
+        System.out.println(formatClassXML);
+        String fromClassXML=Trans.doXsl(basePath+transClass+from+suffix,formatClassXML).getToContent();
+
+        return fromClassXML;
     }
 }

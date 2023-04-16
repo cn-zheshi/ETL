@@ -1,55 +1,133 @@
 package org.systemA;
 
 import org.systemA.sql.AConnection;
-import org.systemA.util.Styles;
+import org.systemA.ui.UiConsts;
+import org.systemA.util.PropertyUtil;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+
+import static org.systemA.http.MyHttpClient.getChoiceCourses;
 
 // 查看已选课程，本院系已选课程、跨院系已选课程、返回
 // 本院系已选课程：课程编号, 课程名称, 学分, 授课老师, 授课地点, 成绩
 // TODO: 跨院系已选课程
 
-public class ViewCourse extends JFrame implements ActionListener {
-    // 数据库连接、sql语句、结果集等对象
-    static Connection ct = null;
-    PreparedStatement ps = null;
-    ResultSet rs = null;
-
+public class ViewCourse extends JPanel {
+    public static Connection ct = null;
+    public static PreparedStatement ps = null;
+    public static ResultSet rs = null;
     // 本院系已选课程，跨院系已选课程
-    // 课程编号, 学生编号, 课程名称, 学分, 授课老师, 授课地点, 得分
-    JTable jt_1, jt_2 = null;
-    DefaultTableModel model_1 = null;
-    JButton jb_1 = null;
-    String username = null;
+    private static JTable jt_1 = null;
+    private static JButton jb_1 = null;
     // 学生编号
-    String student_no = null;
-    JComboBox<String> jComboBox = new JComboBox<String>();
-    JButton selectButton = new JButton("退选");
+    public static String student_no = null;
+    public static JComboBox<String> jComboBox = new JComboBox<String>();
+    public static JButton selectButton = new JButton("退选");
+    private static Object[][] tableDatas = null;
+    private static Object[] tableTitles = {"课程编号", "课程名称", "学分", "授课老师", "授课地点", "成绩"};
+
+    public static DefaultTableModel model_1 = new DefaultTableModel(tableTitles, 0);
 
     public ViewCourse(String username) {
-        this.username = username;
-        this.setLayout(new GridLayout(3, 1));
-        jb_1 = new JButton("返回");
-        jb_1.addActionListener(this);
-        selectButton.addActionListener(this);
-        jt_1 = new JTable();
-        String [] colomn_1 = {"课程编号", "学生编号", "课程名称", "学分", "授课老师", "授课地点", "得分"};
-        jt_1.setModel(model_1 = new DefaultTableModel(colomn_1, 0));
-        model_1.addRow(colomn_1);
+        super(true);
+        initialize();
+        initiateTableData();
+        initiateTableDataFromOther();
+        addComponent();
+    }
 
-        // 获取表格数据
+    private void initialize() {
+        this.setBackground(UiConsts.MAIN_BACK_COLOR);
+        this.setLayout(new BorderLayout());
+    }
+
+
+    private void addComponent() {
+        this.add(getUpPanel(), BorderLayout.NORTH);
+        this.add(getCenterPanel(), BorderLayout.CENTER);
+    }
+
+    private JPanel getUpPanel() {
+        JPanel panelUp = new JPanel();
+        panelUp.setBackground(UiConsts.MAIN_BACK_COLOR);
+        panelUp.setLayout(new FlowLayout(FlowLayout.LEFT, UiConsts.MAIN_H_GAP, 5));
+        JLabel labelTitle = new JLabel("已选课程");
+        labelTitle.setFont(UiConsts.FONT_TITLE);
+        labelTitle.setForeground(UiConsts.TOOL_BAR_BACK_COLOR);
+        panelUp.add(labelTitle);
+
+        return panelUp;
+    }
+
+    private JPanel getCenterPanel() {
+        JPanel panelCenter = new JPanel();
+        panelCenter.setBackground(UiConsts.MAIN_BACK_COLOR);
+        panelCenter.setLayout(new GridLayout(1, 1));
+
+        panelCenter.add(getPanelGridBakFrom());
+
+        return panelCenter;
+    }
+
+    private JPanel getPanelGridBakFrom() {
+        // 本院系已选课程
+        // 跨院系已选课程
+        JPanel panelGridBakFrom = new JPanel();
+        panelGridBakFrom.setBackground(UiConsts.MAIN_BACK_COLOR);
+        panelGridBakFrom.setLayout(new BorderLayout());
+
+        // 本院系已选课程控制面板 panelFromControl
+        JPanel panelFromControl = new JPanel();
+        panelFromControl.setLayout(new GridLayout(1, 2));
+        JPanel panelFromTable = new JPanel();
+        panelFromTable.setLayout(new BorderLayout());
+
+        JPanel panelFromControlLeft = new JPanel();
+        panelFromControlLeft.setLayout(new FlowLayout(FlowLayout.LEFT, UiConsts.MAIN_H_GAP, 5));
+        panelFromControlLeft.setBackground(UiConsts.MAIN_BACK_COLOR);
+
+        JLabel labelFrom = new JLabel("本院系和跨院系已选课程，根据课程编号区分");
+        labelFrom.setFont(new Font(PropertyUtil.getProperty("ds.ui.font.family"), 0, 18));
+        labelFrom.setForeground(Color.gray);
+        panelFromControlLeft.add(labelFrom);
+        panelFromControl.add(panelFromControlLeft);
+
+
+        // 本院系已选课程表格 jt_1 panelScroll
+        jt_1 = new JTable(tableDatas, tableTitles);
+        jt_1.setFont(UiConsts.FONT_NORMAL);
+        jt_1.getTableHeader().setFont(UiConsts.FONT_NORMAL);
+        jt_1.getTableHeader().setBackground(UiConsts.TOOL_BAR_BACK_COLOR);
+        jt_1.setRowHeight(31);
+        jt_1.setGridColor(UiConsts.TABLE_LINE_COLOR);
+        jt_1.setSelectionBackground(UiConsts.TOOL_BAR_BACK_COLOR);
+
+        JScrollPane panelScroll = new JScrollPane(jt_1);
+        panelScroll.setBackground(UiConsts.MAIN_BACK_COLOR);
+
+        // 本院系课程 标题和表格加入到面板
+        panelGridBakFrom.add(panelFromControl, BorderLayout.NORTH);
+        panelGridBakFrom.add(panelScroll, BorderLayout.CENTER);
+
+        return panelGridBakFrom;
+    }
+
+    /**
+     * 获取本院系课程表格数据，包括表头、内容名
+     */
+    public static void initiateTableData() {
+        // 获取本院系表格数据
         ct = AConnection.getConnection();
         try {
             // 获取学生编号
             ps = ct.prepareStatement("select * from 学生 where 关联账户 = ?");
-            ps.setString(1, username);
+            ps.setString(1, App.user);
             rs = ps.executeQuery();
             while (rs.next()) {
                 student_no = rs.getString("学号");
@@ -75,59 +153,56 @@ public class ViewCourse extends JFrame implements ActionListener {
                     };
                     model_1.addRow(row_1);
                 }
-                jComboBox.addItem(rs.getString("课程编号"));
+            }
+            // 写入tableDatas
+            tableDatas = new Object[model_1.getRowCount()][model_1.getColumnCount()];
+            for (int i = 0; i < model_1.getRowCount(); i++) {
+                for (int j = 0; j < model_1.getColumnCount(); j++) {
+                    System.out.println("i: " + i + ", j: " + j);
+                    System.out.println("model_1.getValueAt(i, j): " + model_1.getValueAt(i, j));
+                    tableDatas[i][j] = model_1.getValueAt(i, j);
+                }
             }
         }
         catch (Exception e) {
             e.printStackTrace();
         }
-
-        // 将表格加入到面板
-        JPanel jp_1 = new JPanel();
-        JLabel label = new JLabel("本院系已选课程");
-        jp_1.add(label);
-        jp_1.add(jt_1);
-        // 将按钮加入到面板
-        JPanel jp_2 = new JPanel();
-        jp_2.add(jb_1);
-
-        JPanel jp_3 = new JPanel();
-        jp_3.add(jComboBox);
-        jp_3.add(selectButton);
-
-        // 将面板加入到框架
-        this.add(jp_1);
-        this.add(jp_3);
-        this.add(jp_2);
-
-        Styles.setStyle(this);
     }
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == jb_1) {
-            // 返回
-            this.dispose();
-            new Selection(this.username);
-        }
-        else if (e.getSource() == selectButton) {
-            // 退选
-            String course_no = (String) jComboBox.getSelectedItem();
-            try {
-                ps = ct.prepareStatement("delete from 选课 where 学生编号 = ? and 课程编号 = ?");
-                ps.setString(1, student_no);
-                ps.setString(2, course_no);
-                try {
-                    ps.executeUpdate();
-                    JOptionPane.showMessageDialog(null, "退选成功");
-                }
-                catch (Exception e1) {
-                    JOptionPane.showMessageDialog(null, "退选失败");
-                }
-                this.dispose();
-                new ViewCourse(this.username);
-            }
-            catch (Exception e1) {
-                e1.printStackTrace();
-            }
-        }
+
+    /**
+     * 获取跨院系课程表格数据，包括表头、内容名
+     */
+    public static void initiateTableDataFromOther() {
+        // 获取跨院系表格数据，追加到tableDatas
+        getChoiceCourses("A", "A", "20210001");
+
     }
+
+//    public void actionPerformed(ActionEvent e) {
+//        if (e.getSource() == jb_1) {
+//            // 返回
+//            new Selection(this.username);
+//        }
+//        else if (e.getSource() == selectButton) {
+//            // 退选
+//            String course_no = (String) jComboBox.getSelectedItem();
+//            try {
+//                ps = ct.prepareStatement("delete from 选课 where 学生编号 = ? and 课程编号 = ?");
+//                ps.setString(1, student_no);
+//                ps.setString(2, course_no);
+//                try {
+//                    ps.executeUpdate();
+//                    JOptionPane.showMessageDialog(null, "退选成功");
+//                }
+//                catch (Exception e1) {
+//                    JOptionPane.showMessageDialog(null, "退选失败");
+//                }
+//                this.dispose();
+//                new ViewCourse(this.username);
+//            }
+//            catch (Exception e1) {
+//                e1.printStackTrace();
+//            }
+//        }
+//    }
 }

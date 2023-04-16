@@ -3,6 +3,7 @@ package org.systemA;
 import javax.swing.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.systemA.http.MyHttpServer;
 import org.systemA.ui.UiConsts;
 import org.systemA.ui.panel.LoginPanel;
 import org.systemA.ui.panel.ToolBarPanel;
@@ -33,6 +34,7 @@ public class App {
             try {
                 App window = new App();
                 window.frame.setVisible(true);
+                MyHttpServer.main(args);
             } catch (Exception e) {
                 e.printStackTrace();
             }

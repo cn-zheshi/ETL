@@ -39,11 +39,11 @@ public class HttpHelper {
         GetMethod getMethod = new GetMethod(urlParam);
         // 设置post请求超时时间
         getMethod.getParams().setParameter(HttpMethodParams.SO_TIMEOUT, 60000);
-        getMethod.addRequestHeader("Content-Type", "text/xm;");
-
+        // utf-8
+        getMethod.setRequestHeader("Accept", "application/xml;charset=utf-8");
         httpClient.executeMethod(getMethod);
-
         String result = getMethod.getResponseBodyAsString();
+        result = new String(result.getBytes("ISO-8859-1"), "utf-8");
         getMethod.releaseConnection();
         return result;
     }
