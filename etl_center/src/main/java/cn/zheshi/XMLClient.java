@@ -109,11 +109,8 @@ public class XMLClient {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         String formatClassXML = Trans.doXsl(basePath+formatClass, toChoiceXML).getToContent();
-        System.out.println(formatClassXML);
         String fromClassXML=Trans.doXsl(basePath+transClass+from+suffix,formatClassXML).getToContent();
-
         return fromClassXML;
     }
 }

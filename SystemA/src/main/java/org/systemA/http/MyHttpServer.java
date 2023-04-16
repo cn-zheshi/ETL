@@ -77,6 +77,7 @@ class CourseChosedHandler implements HttpHandler {
 
     public void handle(HttpExchange httpExchange) throws IOException {
         String content = null;
+        courses = new ArrayList<>();
         // 连接数据库，查询学生的课程信息
         // 将查询结果转换为xml格式
         ct = AConnection.getConnection();
@@ -116,15 +117,16 @@ class CourseChosedHandler implements HttpHandler {
         catch (Exception e) {
             e.printStackTrace();
         }
+
         // 将查询结果转换为xml格式
         content = generateCourseInfo(courses);
+        System.out.println(content);
         //设置响应头属性及响应信息的长度
         httpExchange.sendResponseHeaders(200, content.getBytes("UTF-8").length);
         // 设置utf-8编码
         httpExchange.getResponseHeaders().set("charset", "utf-8");
         //获得输出流
         OutputStream os = httpExchange.getResponseBody();
-        System.out.println(content.getBytes("UTF-8"));
         os.write(content.getBytes("UTF-8"));
         os.close();
     }

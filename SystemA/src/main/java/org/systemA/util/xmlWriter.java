@@ -16,7 +16,7 @@ public class xmlWriter {
         Element root = document.addElement("Classes");
 
         for (String[] course : courses) {
-            Element classElement = root.addElement("Class");
+            Element classElement = root.addElement("class");
             classElement.addElement("课程编号").addText(course[0]);
             classElement.addElement("课程名称").addText(course[1]);
             classElement.addElement("学分").addText(course[2]);
