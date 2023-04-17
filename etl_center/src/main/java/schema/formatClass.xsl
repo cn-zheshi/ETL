@@ -27,12 +27,15 @@
                         <xsl:value-of select="老师"/>
                         <xsl:value-of select="Tec"/>
                     </teacher>
-
                     <location>
                         <xsl:value-of select="授课地点"/>
                         <xsl:value-of select="地点"/>
                         <xsl:value-of select="Pla"/>
                     </location>
+                    <share>
+                        <xsl:value-of select="共享"/>
+                        <xsl:value-of select="Share"/>
+                    </share>
                 </class>
             </xsl:for-each>
         </Classes>

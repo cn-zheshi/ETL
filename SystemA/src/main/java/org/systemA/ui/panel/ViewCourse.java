@@ -1,5 +1,6 @@
-package org.systemA;
+package org.systemA.ui.panel;
 
+import org.systemA.App;
 import org.systemA.sql.AConnection;
 import org.systemA.ui.UiConsts;
 import org.systemA.util.PropertyUtil;
@@ -14,21 +15,16 @@ import java.sql.ResultSet;
 
 import static org.systemA.http.MyHttpClient.getChoiceCourses;
 
-// 查看已选课程，本院系已选课程、跨院系已选课程、返回
+// 查看已选课程，本院系已选课程、跨院系已选课程
 // 本院系已选课程：课程编号, 课程名称, 学分, 授课老师, 授课地点, 成绩
-// TODO: 跨院系已选课程
-
 public class ViewCourse extends JPanel {
     public static Connection ct = null;
     public static PreparedStatement ps = null;
     public static ResultSet rs = null;
     // 本院系已选课程，跨院系已选课程
     private static JTable jt_1 = null;
-    private static JButton jb_1 = null;
     // 学生编号
     public static String student_no = null;
-    public static JComboBox<String> jComboBox = new JComboBox<String>();
-    public static JButton selectButton = new JButton("退选");
     private static Object[][] tableDatas = null;
     public static Object[] tableTitles = {"课程编号", "课程名称", "学分", "授课老师", "授课地点", "成绩"};
 
@@ -112,7 +108,7 @@ public class ViewCourse extends JPanel {
     }
 
     /**
-     * 获取本院系课程表格数据，包括表头、内容名
+     * 获取课程表格数据，包括表头、内容名
      */
     public static void initiateTableData() {
         // 获取本院系表格数据
@@ -177,32 +173,4 @@ public class ViewCourse extends JPanel {
             }
         }
     }
-
-//    public void actionPerformed(ActionEvent e) {
-//        if (e.getSource() == jb_1) {
-//            // 返回
-//            new Selection(this.username);
-//        }
-//        else if (e.getSource() == selectButton) {
-//            // 退选
-//            String course_no = (String) jComboBox.getSelectedItem();
-//            try {
-//                ps = ct.prepareStatement("delete from 选课 where 学生编号 = ? and 课程编号 = ?");
-//                ps.setString(1, student_no);
-//                ps.setString(2, course_no);
-//                try {
-//                    ps.executeUpdate();
-//                    JOptionPane.showMessageDialog(null, "退选成功");
-//                }
-//                catch (Exception e1) {
-//                    JOptionPane.showMessageDialog(null, "退选失败");
-//                }
-//                this.dispose();
-//                new ViewCourse(this.username);
-//            }
-//            catch (Exception e1) {
-//                e1.printStackTrace();
-//            }
-//        }
-//    }
 }

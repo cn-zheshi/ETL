@@ -5,9 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.systemA.http.MyHttpServer;
 import org.systemA.ui.UiConsts;
-import org.systemA.ui.panel.LoginPanel;
-import org.systemA.ui.panel.PersonalInfo;
-import org.systemA.ui.panel.ToolBarPanel;
+import org.systemA.ui.panel.*;
 
 import java.awt.*;
 
@@ -30,6 +28,10 @@ public class App {
     public static PersonalInfo personalInfo;
 
     public static ViewCourse viewCourse;
+
+    public static ChooseCourse chooseCourse;
+
+    public static DeleteCourse deleteCourse;
 
     /**
      * 程序入口main

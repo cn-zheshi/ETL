@@ -4,7 +4,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-import org.systemA.ViewCourse;
+import org.systemA.ui.panel.ViewCourse;
 import org.systemA.sql.AConnection;
 
 import javax.swing.table.DefaultTableModel;
@@ -56,8 +56,46 @@ public class XMLParser {
     }
 
     // 解析课程信息
+    public static DefaultTableModel parseCoursesInfo(String coursesResponse) {
+        DefaultTableModel model = new DefaultTableModel(ViewCourse.tableTitles, 0);
+        SAXReader saxReader = new SAXReader();
+        Document courseDocument = null;
+        List<String[]> courses = new ArrayList< String[]>();
+        try {
+            InputStream inputStream = new ByteArrayInputStream(coursesResponse.getBytes("UTF-8"));
+            courseDocument = saxReader.read(inputStream);
+        } catch (DocumentException e) {
+            throw new RuntimeException(e);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+        Element root = courseDocument.getRootElement();
+        for (Iterator i = root.elementIterator(); i.hasNext();) {
+            Element foo = (Element) i.next();
+            Vector<String> course = new Vector<String>();
+            for (Iterator j = foo.elementIterator(); j.hasNext();) {
+                Element tmp = (Element) j.next();
+                course.add(tmp.getStringValue());
+            }
+            courses.add(course.toArray(new String[0]));
+        }
+        for (String[] course : courses) {
+            String[] row = new String[ViewCourse.tableTitles.length];
+            // 课程编号, 课程名称, 学分, 授课老师, 授课地点, 共享
+            row[0] = course[0]; // 课程编号
+            row[1] = course[1]; // 课程名称
+            row[2] = course[2]; // 学分
+            row[3] = course[3]; // 授课老师
+            row[4] = course[4]; // 授课地点
+            row[5] = course[5]; // 共享
+            model.addRow(row);
+        }
+        return model;
+    }
+
+
+    // 解析选课信息
     public static DefaultTableModel parseClassesInfo(String coursesResponse, String choicesResponse) {
-        System.out.println(coursesResponse);
         DefaultTableModel model = new DefaultTableModel(ViewCourse.tableTitles, 0);
         SAXReader saxReader = new SAXReader();
         Document courseDocument = null;

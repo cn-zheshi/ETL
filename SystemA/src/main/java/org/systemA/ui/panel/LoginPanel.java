@@ -1,6 +1,5 @@
 package org.systemA.ui.panel;
 
-import org.systemA.Selection;
 import org.systemA.sql.AConnection;
 import org.systemA.ui.UiConsts;
 import org.systemA.App;

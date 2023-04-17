@@ -1,7 +1,6 @@
 package org.systemA.ui.panel;
 
 import org.systemA.App;
-import org.systemA.ViewCourse;
 import org.systemA.ui.UiConsts;
 import org.systemA.ui.component.MyIconButton;
 import org.systemA.util.PropertyUtil;
@@ -81,6 +80,26 @@ public class ToolBarPanel extends JPanel {
             App.mainPanelCenter.removeAll();
             App.viewCourse = new ViewCourse(App.user);
             App.mainPanelCenter.add(App.viewCourse, BorderLayout.CENTER);
+            App.mainPanelCenter.updateUI();
+        });
+        buttonChooseCourse.addActionListener(e -> {
+            buttonPersonalInfo.setIcon(UiConsts.ICON_PERSONAL_INFO);
+            buttonViewCourse.setIcon(UiConsts.ICON_VIEW_COURSE);
+            buttonChooseCourse.setIcon(UiConsts.ICON_CHOOSE_COURSE_HOVER);
+            buttonDeleteCourse.setIcon(UiConsts.ICON_DROP_COURSE);
+            App.mainPanelCenter.removeAll();
+            App.chooseCourse = new ChooseCourse(App.user);
+            App.mainPanelCenter.add(App.chooseCourse, BorderLayout.CENTER);
+            App.mainPanelCenter.updateUI();
+        });
+        buttonDeleteCourse.addActionListener(e -> {
+            buttonPersonalInfo.setIcon(UiConsts.ICON_PERSONAL_INFO);
+            buttonViewCourse.setIcon(UiConsts.ICON_VIEW_COURSE);
+            buttonChooseCourse.setIcon(UiConsts.ICON_CHOOSE_COURSE);
+            buttonDeleteCourse.setIcon(UiConsts.ICON_DROP_COURSE_HOVER);
+            App.mainPanelCenter.removeAll();
+            App.deleteCourse = new DeleteCourse(App.user);
+            App.mainPanelCenter.add(App.deleteCourse, BorderLayout.CENTER);
             App.mainPanelCenter.updateUI();
         });
     }
