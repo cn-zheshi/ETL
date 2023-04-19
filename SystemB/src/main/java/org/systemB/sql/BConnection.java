@@ -34,7 +34,7 @@ public class BConnection {
         try {
             // conn system/123456@SYSTEMB
             String sql = "INSERT ALL\n" +
-                    "  INTO 选课 (课程编号, 学号, 得分) VALUES ('A001', '20210001', '90')\n" +
+                    "  INTO 选课 (课程编号, 学号, 得分) VALUES ('A001', '20230001', '90')\n" +
                     "SELECT 1 FROM DUAL";
             java.sql.Statement stmt = con.createStatement();
             java.sql.ResultSet rs = stmt.executeQuery(sql);

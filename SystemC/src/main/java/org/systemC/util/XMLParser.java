@@ -142,17 +142,34 @@ public class XMLParser {
             choices.add(choice.toArray(new String[0]));
         }
 
+        // 打印课程信息
+        for (String[] course : courses) {
+            for (String s : course) {
+                System.out.print(s + " ");
+            }
+            System.out.println();
+        }
+
+        // 打印选课信息
+        for (String[] choice : choices) {
+            for (String s : choice) {
+                System.out.print(s + " ");
+            }
+            System.out.println();
+        }
+
         // 将课程信息和选课信息合并
         for (String[] course : courses) {
             for (String[] choice : choices) {
-                if (course[0].equals(choice[0])) {
+                if (course[0].equals(choice[1])) {
                     String[] row = new String[ViewCourse.tableTitles.length];
                     row[0] = course[0]; // 课程编号
                     row[1] = course[1]; // 课程名称
-                    row[2] = course[2]; // 学分
-                    row[3] = course[3]; // 授课老师
-                    row[4] = course[4]; // 授课地点
-                    row[5] = choice[2]; // 成绩
+                    row[2] = new String("无");
+                    row[3] = course[2]; // 学分
+                    row[4] = course[3]; // 授课老师
+                    row[5] = course[4]; // 授课地点
+                    row[6] = choice[2]; // 成绩
                     model.addRow(row);
                 }
             }

@@ -15,23 +15,15 @@ import java.awt.*;
  */
 public class App {
     private static final Logger logger = LoggerFactory.getLogger(App.class);
-
     private JFrame frame;
-
     public static JPanel mainPanelCenter;
     public static LoginPanel loginPanel;
-
     public static ToolBarPanel toolBar;
-
     public static String user;
     public static String student_no;
-
     public static PersonalInfo personalInfo;
-
     public static ViewCourse viewCourse;
-
     public static ChooseCourse chooseCourse;
-
     public static DeleteCourse deleteCourse;
 
     /**

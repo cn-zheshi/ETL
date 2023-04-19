@@ -114,30 +114,23 @@ public class ViewCourse extends JPanel {
         ct = BConnection.getConnection();
         try {
             model_1 = new DefaultTableModel(tableTitles, 0);
-            // 获取学生编号
-            ps = ct.prepareStatement("select * from 学生 where 关联账户 = ?");
-            ps.setString(1, App.user);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                student_no = rs.getString("学号");
-            }
-            // 获取已选课程的信息
-            ps = ct.prepareStatement("select * from 选课 where 学生编号 = ?");
-            ps.setString(1, student_no);
+            ps = ct.prepareStatement("select * from 选课 where 学号 = ?");
+            ps.setString(1, App.student_no);
             rs = ps.executeQuery();
             while (rs.next()) {
                 String course_no = rs.getString("课程编号");
-                ps = ct.prepareStatement("select * from 课程 where 课程编号 = ?");
+                ps = ct.prepareStatement("select * from 课程 where 编号 = ?");
                 ps.setString(1, course_no);
                 ResultSet rs_1 = ps.executeQuery();
                 while (rs_1.next()) {
                     String [] row_1 = {
-                            rs_1.getString("课程编号"),
-                            rs_1.getString("课程名称"),
+                            rs_1.getString("编号"),
+                            rs_1.getString("名称"),
+                            rs_1.getString("课时"),
                             rs_1.getString("学分"),
-                            rs_1.getString("授课老师"),
-                            rs_1.getString("授课地点"),
-                            rs.getString("成绩")
+                            rs_1.getString("老师"),
+                            rs_1.getString("地点"),
+                            rs.getString("得分")
                     };
                     model_1.addRow(row_1);
                 }
@@ -159,8 +152,16 @@ public class ViewCourse extends JPanel {
      */
     public static void initiateTableDataFromOther() {
         // 获取跨院系表格数据，追加到tableDatas
-        DefaultTableModel model_2 = getChoiceCourses("A", "A", "20210001");
-        tableDatas = new Object[model_1.getRowCount() + model_2.getRowCount()][model_1.getColumnCount()];
+        DefaultTableModel model_2 = getChoiceCourses("B", "A", App.student_no);
+        DefaultTableModel model_3 = getChoiceCourses("B", "C", App.student_no);
+        // 打印model_3
+        for (int i = 0; i < model_3.getRowCount(); i++) {
+            for (int j = 0; j < model_3.getColumnCount(); j++) {
+                System.out.print(model_3.getValueAt(i, j) + " ");
+            }
+            System.out.println();
+        }
+        tableDatas = new Object[model_1.getRowCount() + model_2.getRowCount() + model_3.getRowCount()][model_1.getColumnCount()];
         for (int i = 0; i < model_1.getRowCount(); i++) {
             for (int j = 0; j < model_1.getColumnCount(); j++) {
                 tableDatas[i][j] = model_1.getValueAt(i, j);
@@ -169,6 +170,11 @@ public class ViewCourse extends JPanel {
         for (int i = 0; i < model_2.getRowCount(); i++) {
             for (int j = 0; j < model_2.getColumnCount(); j++) {
                 tableDatas[i + model_1.getRowCount()][j] = model_2.getValueAt(i, j);
+            }
+        }
+        for (int i = 0; i < model_3.getRowCount(); i++) {
+            for (int j = 0; j < model_3.getColumnCount(); j++) {
+                tableDatas[i + model_1.getRowCount() + model_2.getRowCount()][j] = model_3.getValueAt(i, j);
             }
         }
     }
