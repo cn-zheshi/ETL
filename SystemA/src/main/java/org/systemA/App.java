@@ -25,6 +25,8 @@ public class App {
 
     public static String user;
 
+    public static String student_no;
+
     public static PersonalInfo personalInfo;
 
     public static ViewCourse viewCourse;

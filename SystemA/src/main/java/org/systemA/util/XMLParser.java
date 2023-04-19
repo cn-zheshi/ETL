@@ -141,11 +141,10 @@ public class XMLParser {
             }
             choices.add(choice.toArray(new String[0]));
         }
-
         // 将课程信息和选课信息合并
         for (String[] course : courses) {
             for (String[] choice : choices) {
-                if (course[0].equals(choice[0])) {
+                if (course[0].equals(choice[1])) {
                     String[] row = new String[ViewCourse.tableTitles.length];
                     row[0] = course[0]; // 课程编号
                     row[1] = course[1]; // 课程名称

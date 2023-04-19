@@ -13,18 +13,22 @@
                         <xsl:value-of select="Ñ§ºÅ"/>
                         <xsl:value-of select="Sno"/>
                     </sid>
-                    <xsl:choose>
-                        <xsl:when test="./Cno=''">
-                            <cid>
-                                <xsl:value-of select="¿Î³Ì±àºÅ"/>
-                            </cid>
-                        </xsl:when>
-                        <xsl:when test="./Cno!=''">
-                            <cid>
-                                <xsl:value-of select="Cno"/>
-                            </cid>
-                        </xsl:when>
-                    </xsl:choose>
+<!--                    <xsl:choose>-->
+<!--                        <xsl:when test="./Cno=''">-->
+<!--                            <cid>-->
+<!--                                <xsl:value-of select="¿Î³Ì±àºÅ"/>-->
+<!--                            </cid>-->
+<!--                        </xsl:when>-->
+<!--                        <xsl:when test="./Cno!=''">-->
+<!--                            <cid>-->
+<!--                                <xsl:value-of select="Cno"/>-->
+<!--                            </cid>-->
+<!--                        </xsl:when>-->
+<!--                    </xsl:choose>-->
+                    <cid>
+                        <xsl:value-of select="¿Î³Ì±àºÅ"/>
+                        <xsl:value-of select="Cno"/>
+                    </cid>
                     <score>
                         <xsl:value-of select="³É¼¨"/>
                         <xsl:value-of select="µÃ·Ö"/>

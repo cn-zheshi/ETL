@@ -1,5 +1,6 @@
 package org.systemC.ui.panel;
 
+import org.systemC.App;
 import org.systemC.sql.CConnection;
 import org.systemC.ui.UiConsts;
 
@@ -15,7 +16,7 @@ public class PersonalInfo extends JPanel {
     public static PreparedStatement ps = null;
     public static ResultSet rs = null;
 
-    // 显示个人信息：学号, 姓名, 性别, 院系, 关联账户
+    // 显示个人信息：Sno, Snm, Sex, Sde, Pwd
     public static JLabel jl_1, jl_2, jl_3, jl_4, jl_5 = null;
     public static String user = null;
     public PersonalInfo(String username)
@@ -42,18 +43,18 @@ public class PersonalInfo extends JPanel {
     }
 
     public static void setContent(String username) {
-        user = username;
+        String password = App.password;
         ct = CConnection.getConnection();
         try {
-            ps = ct.prepareStatement("select * from 学生 where 关联账户 = ?");
-            ps.setString(1, username);
+            ps = ct.prepareStatement("select * from 学生 where Pwd = ?");
+            ps.setString(1, password);
             rs = ps.executeQuery();
             while (rs.next()) {
-                jl_1 = new JLabel("学号: " + rs.getString("学号"));
-                jl_2 = new JLabel("姓名: " + rs.getString("姓名"));
-                jl_3 = new JLabel("性别: " + rs.getString("性别"));
-                jl_4 = new JLabel("院系: " + rs.getString("院系"));
-                jl_5 = new JLabel("关联账户: " + rs.getString("关联账户"));
+                jl_1 = new JLabel("Sno: " + rs.getString("Sno"));
+                jl_2 = new JLabel("Snm: " + rs.getString("Snm"));
+                jl_3 = new JLabel("Sex: " + rs.getString("Sex"));
+                jl_4 = new JLabel("Sde: " + rs.getString("Sde"));
+                jl_5 = new JLabel("Pwd: " + rs.getString("Pwd"));
             }
         }
         catch (Exception e) {

@@ -114,19 +114,26 @@ public class LoginPanel extends JPanel implements ActionListener {
             // 选中学生登录
             else if(jrb_2.isSelected()) {
                 try {
-                    ps = ct.prepareStatement("select * from 账户 where 权限=? and 账户名=?");
-                    ps.setString(1, "stud");
-                    ps.setString(2, jtf.getText());
+                    ps = ct.prepareStatement("select * from 账户 where acc=?");
+                    ps.setString(1, jtf.getText());
                     rs=ps.executeQuery();
                     if(rs.next()) {
-                        // 将用户名，密码，权限取出
-                        String user_name = rs.getString("账户名");
-                        String password = rs.getString("密码");
-                        String identity = rs.getString("权限");
+                        // 将用户名，密码取出
+                        String user_name = rs.getString("acc");
+                        String password = rs.getString("passwd");
                         if(user_name.equals(jtf.getText()) && password.equals(String.valueOf(jpf.getPassword()))){
                             JOptionPane.showMessageDialog(null, "登陆成功！", "提示消息", JOptionPane.WARNING_MESSAGE);
                             // 设置当前用户
                             App.user = user_name;
+                            App.password = password;
+
+                            // 根据password获取学号
+                            ps = ct.prepareStatement("select * from 学生 where Pwd=?");
+                            ps.setString(1, password);
+                            rs=ps.executeQuery();
+                            if(rs.next()) {
+                                App.student_no = rs.getString("Sno");
+                            }
                             clear();
                             // 显示功能栏，隐藏登录界面
                             App.changePanel();

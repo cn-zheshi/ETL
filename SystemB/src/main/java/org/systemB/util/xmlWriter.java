@@ -16,12 +16,13 @@ public class xmlWriter {
 
         for (String[] course : courses) {
             Element classElement = root.addElement("class");
-            classElement.addElement("课程编号").addText(course[0]);
-            classElement.addElement("课程名称").addText(course[1]);
-            classElement.addElement("学分").addText(course[2]);
-            classElement.addElement("授课老师").addText(course[3]);
-            classElement.addElement("授课地点").addText(course[4]);
-            classElement.addElement("共享").addText(course[5]);
+            classElement.addElement("编号").addText(course[0]);
+            classElement.addElement("名称").addText(course[1]);
+            classElement.addElement("课时").addText(course[2]);
+            classElement.addElement("学分").addText(course[3]);
+            classElement.addElement("老师").addText(course[4]);
+            classElement.addElement("地点").addText(course[5]);
+            classElement.addElement("共享").addText(course[6]);
         }
 
         xml = document.asXML();
@@ -37,9 +38,9 @@ public class xmlWriter {
 
         for (String[] choice : choices) {
             Element classElement = root.addElement("choice");
-            classElement.addElement("学生编号").addText(choice[0]);
-            classElement.addElement("课程编号").addText(choice[1]);
-            classElement.addElement("成绩").addText(choice[2]);
+            classElement.addElement("课程编号").addText(choice[0]);
+            classElement.addElement("学号").addText(choice[1]);
+            classElement.addElement("得分").addText(choice[2]);
         }
 
         xml = document.asXML();

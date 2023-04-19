@@ -26,18 +26,18 @@ public class BConnection {
 
     public static void main(String[] args) {
         BConnection.getConnection();
+//        executeBSQL();
     }
 
     public static void executeBSQL() {
         Connection con = BConnection.getConnection();
         try {
             // conn system/123456@SYSTEMB
-            String sql = "select * from 学生";
+            String sql = "INSERT ALL\n" +
+                    "  INTO 选课 (课程编号, 学号, 得分) VALUES ('A001', '20210001', '90')\n" +
+                    "SELECT 1 FROM DUAL";
             java.sql.Statement stmt = con.createStatement();
             java.sql.ResultSet rs = stmt.executeQuery(sql);
-            while (rs.next()) {
-                System.out.println(rs.getString("学号") + " " + rs.getString("姓名"));
-            }
             con.close();
         } catch (Exception e) {
             e.printStackTrace();

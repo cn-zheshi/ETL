@@ -24,8 +24,8 @@ public class MyHttpClient {
 
     // 获取其他系统的选课信息
     public static DefaultTableModel getChoiceCourses(String from, String to, String studentNo) {
-        String coursesUrl = null;
-        String choiceUrl = null;
+        String coursesUrl;
+        String choiceUrl;
         coursesUrl = baseUrl + "/getAllCourses?from=" + from + "&to=" + to + "&studentNo=" + studentNo;
         choiceUrl = baseUrl + "/getAllChoices?from=" + from + "&to=" + to + "&studentNo=" + studentNo;
         String charset = "utf-8";

@@ -8,10 +8,7 @@ import org.systemB.sql.BConnection;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,11 +26,9 @@ public class MyHttpServer {
      */
     public static void main(String[] args) throws IOException {
         // 创建HttpServer服务器
-        HttpServer httpServer = HttpServer.create(new InetSocketAddress(5050), 10);
+        HttpServer httpServer = HttpServer.create(new InetSocketAddress(5051), 10);
         //将 / 请求交给MyHandler处理器处理
         httpServer.createContext("/test", new MyHandler());
-        // 提供本院系的课程信息
-        httpServer.createContext("/courses", new MyHandler());
         // 提供本院系的学生信息
         httpServer.createContext("/students", new MyHandler());
         // 根据xml文件的信息，退选本院系的课
@@ -66,33 +61,28 @@ class MyHandler implements HttpHandler {
 }
 
 class CourseHandler implements HttpHandler {
-
     public static Connection ct = null;
-    public static PreparedStatement ps = null;
+    public static Statement ps = null;
     public static ResultSet rs = null;
-
-
-    // 存放查询结果，课程信息
     public static List<String[]> courses = new ArrayList<>();
-
-
     public void handle(HttpExchange httpExchange) throws IOException {
         String content = null;
         courses = new ArrayList<>();
         // 连接数据库，查询学生的课程信息
         ct = BConnection.getConnection();
-        List<String> temp = new ArrayList<>();
         try {
-            ps = ct.prepareStatement("select * from 课程");
-            rs = ps.executeQuery();
+            String sql = "select * from 课程";
+            java.sql.Statement stmt = ct.createStatement();
+            rs = stmt.executeQuery(sql);
             while (rs.next()) {
-                String[] course = new String[6];
-                course[0] = rs.getString("课程编号");
-                course[1] = rs.getString("课程名称");
-                course[2] = rs.getString("学分");
-                course[3] = rs.getString("授课老师");
-                course[4] = rs.getString("授课地点");
-                course[5] = rs.getString("共享");
+                String[] course = new String[7];
+                course[0] = rs.getString("编号");
+                course[1] = rs.getString("名称");
+                course[2] = rs.getString("课时");
+                course[3] = rs.getString("学分");
+                course[4] = rs.getString("老师");
+                course[5] = rs.getString("地点");
+                course[6] = rs.getString("共享");
                 courses.add(course);
             }
         } catch (SQLException e) {
@@ -128,22 +118,21 @@ class ChoiceHandler implements HttpHandler {
         ct = BConnection.getConnection();
         studentNo = httpExchange.getRequestURI().getQuery().split("=")[1];
         try {
-            ps = ct.prepareStatement("select * from 选课 where 学生编号 = ?");
-            ps.setString(1, studentNo);
-            rs = ps.executeQuery();
+            java.sql.Statement stmt = ct.createStatement();
+            rs = stmt.executeQuery("select * from 选课 where 学号 = " + studentNo);
             while (rs.next()) {
                 String[] choice = new String[3];
                 choice[0] = rs.getString("课程编号");
-                choice[1] = rs.getString("学生编号");
-                choice[2] = rs.getString("成绩");
+                choice[1] = rs.getString("学号");
+                choice[2] = rs.getString("得分");
                 choices.add(choice);
             }
         } catch (SQLException e) {
+            System.out.println("查询选课信息失败");
             throw new RuntimeException(e);
         }
         // 将查询结果转换为xml格式
         content = generateChoiceInfo(choices);
-        System.out.println(content);
         //设置响应头属性及响应信息的长度
         httpExchange.sendResponseHeaders(200, content.getBytes("UTF-8").length);
         // 设置utf-8编码

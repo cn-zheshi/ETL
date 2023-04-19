@@ -38,8 +38,8 @@ public class xmlWriter {
 
         for (String[] choice : choices) {
             Element classElement = root.addElement("choice");
-            classElement.addElement("学生编号").addText(choice[0]);
-            classElement.addElement("课程编号").addText(choice[1]);
+            classElement.addElement("课程编号").addText(choice[0]);
+            classElement.addElement("学生编号").addText(choice[1]);
             classElement.addElement("成绩").addText(choice[2]);
         }
 

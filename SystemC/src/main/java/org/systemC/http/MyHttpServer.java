@@ -29,7 +29,7 @@ public class MyHttpServer {
      */
     public static void main(String[] args) throws IOException {
         // 创建HttpServer服务器
-        HttpServer httpServer = HttpServer.create(new InetSocketAddress(5050), 10);
+        HttpServer httpServer = HttpServer.create(new InetSocketAddress(5052), 10);
         //将 / 请求交给MyHandler处理器处理
         httpServer.createContext("/test", new MyHandler());
         // 提供本院系的课程信息
@@ -86,13 +86,14 @@ class CourseHandler implements HttpHandler {
             ps = ct.prepareStatement("select * from 课程");
             rs = ps.executeQuery();
             while (rs.next()) {
-                String[] course = new String[6];
-                course[0] = rs.getString("课程编号");
-                course[1] = rs.getString("课程名称");
-                course[2] = rs.getString("学分");
-                course[3] = rs.getString("授课老师");
-                course[4] = rs.getString("授课地点");
-                course[5] = rs.getString("共享");
+                String[] course = new String[7];
+                course[0] = rs.getString("Cno");
+                course[1] = rs.getString("Cnm");
+                course[2] = rs.getString("Ctm");
+                course[3] = rs.getString("Cpt");
+                course[4] = rs.getString("Tec");
+                course[5] = rs.getString("Pla");
+                course[6] = rs.getString("Share");
                 courses.add(course);
             }
         } catch (SQLException e) {
@@ -128,14 +129,14 @@ class ChoiceHandler implements HttpHandler {
         ct = CConnection.getConnection();
         studentNo = httpExchange.getRequestURI().getQuery().split("=")[1];
         try {
-            ps = ct.prepareStatement("select * from 选课 where 学生编号 = ?");
+            ps = ct.prepareStatement("select * from 选课 where Sno = ?");
             ps.setString(1, studentNo);
             rs = ps.executeQuery();
             while (rs.next()) {
                 String[] choice = new String[3];
-                choice[0] = rs.getString("课程编号");
-                choice[1] = rs.getString("学生编号");
-                choice[2] = rs.getString("成绩");
+                choice[0] = rs.getString("Cno");
+                choice[1] = rs.getString("Sno");
+                choice[2] = rs.getString("Grd");
                 choices.add(choice);
             }
         } catch (SQLException e) {
@@ -143,7 +144,6 @@ class ChoiceHandler implements HttpHandler {
         }
         // 将查询结果转换为xml格式
         content = generateChoiceInfo(choices);
-        System.out.println(content);
         //设置响应头属性及响应信息的长度
         httpExchange.sendResponseHeaders(200, content.getBytes("UTF-8").length);
         // 设置utf-8编码

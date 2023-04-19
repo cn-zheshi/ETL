@@ -22,13 +22,11 @@ public class XMLClient {
     private static final String suffix = ".xsl";
     //TODO:设置三个服务器的url
     private static final String serverAURL = "http://localhost:5050";
-    private static final String serverBURL = "";
-    private static final String serverCURL = "";
+    private static final String serverBURL = "http://localhost:5051";
+    private static final String serverCURL = "http://localhost:5052";
     private static final String courseSuffix = "/course";
     private static final String choiceSuffix = "/select";
-
     private static final String studentSuffix = "/student";
-
     // 已选课程
     private static final String courseChosed = "/courseChosed";
 
@@ -120,8 +118,11 @@ public class XMLClient {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.out.println(toChoiceXML);
         String formatChoiceXML = Trans.doXsl(basePath+formatChoice, toChoiceXML).getToContent();
+        System.out.println(formatChoiceXML);
         String fromChoiceXML=Trans.doXsl(basePath+transChoice+from+suffix,formatChoiceXML).getToContent();
+        System.out.println(fromChoiceXML);
         return fromChoiceXML;
     }
 }

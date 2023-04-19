@@ -127,6 +127,15 @@ public class LoginPanel extends JPanel implements ActionListener {
                             JOptionPane.showMessageDialog(null, "登陆成功！", "提示消息", JOptionPane.WARNING_MESSAGE);
                             // 设置当前用户
                             App.user = user_name;
+
+                            // 根据用户名获取学号
+                            ps = ct.prepareStatement("select * from 学生 where 关联账户=?");
+                            ps.setString(1, user_name);
+                            rs = ps.executeQuery();
+                            if(rs.next()) {
+                                App.student_no = rs.getString("学号");
+                            }
+
                             clear();
                             // 显示功能栏，隐藏登录界面
                             App.changePanel();
