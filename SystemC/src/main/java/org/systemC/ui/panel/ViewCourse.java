@@ -1,9 +1,9 @@
-package org.systemB.ui.panel;
+package org.systemC.ui.panel;
 
-import org.systemB.App;
-import org.systemB.sql.BConnection;
-import org.systemB.ui.UiConsts;
-import org.systemB.util.PropertyUtil;
+import org.systemC.App;
+import org.systemC.sql.CConnection;
+import org.systemC.ui.UiConsts;
+import org.systemC.util.PropertyUtil;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -12,10 +12,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import static org.systemB.http.MyHttpClient.getChoiceCourses;
+import static org.systemC.http.MyHttpClient.getChoiceCourses;
 
 // 查看已选课程，本院系已选课程、跨院系已选课程
-// 本院系已选课程：编号, 名称, 课时, 学分, 老师, 地点, 得分
+// 本院系已选课程：课程编号, 课程名称, 学分, 授课老师, 授课地点, 成绩
 public class ViewCourse extends JPanel {
     public static Connection ct = null;
     public static PreparedStatement ps = null;
@@ -25,7 +25,7 @@ public class ViewCourse extends JPanel {
     // 学生编号
     public static String student_no = null;
     private static Object[][] tableDatas = null;
-    public static Object[] tableTitles = {"编号", "名称", "课时", "学分", "老师", "地点", "得分"};
+    public static Object[] tableTitles = {"课程编号", "课程名称", "学分", "授课老师", "授课地点", "成绩"};
 
     public static DefaultTableModel model_1 = null;
 
@@ -111,7 +111,7 @@ public class ViewCourse extends JPanel {
      */
     public static void initiateTableData() {
         // 获取本院系表格数据
-        ct = BConnection.getConnection();
+        ct = CConnection.getConnection();
         try {
             model_1 = new DefaultTableModel(tableTitles, 0);
             // 获取学生编号

@@ -1,22 +1,20 @@
-package org.systemB.ui.panel;
-
-import org.systemB.App;
-import org.systemB.sql.BConnection;
-import org.systemB.ui.UiConsts;
-import org.systemB.util.PropertyUtil;
-
+package org.systemC.ui.panel;
+import org.systemC.App;
+import org.systemC.sql.CConnection;
+import org.systemC.ui.UiConsts;
+import org.systemC.util.PropertyUtil;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import static org.systemB.http.MyHttpClient.getChoiceCourses;
+import static org.systemC.http.MyHttpClient.getChoiceCourses;
 
-// 查看已选课程，本院系已选课程、跨院系已选课程
-// 本院系已选课程：编号, 名称, 课时, 学分, 老师, 地点, 得分
-public class ViewCourse extends JPanel {
+public class DeleteCourse extends JPanel {
     public static Connection ct = null;
     public static PreparedStatement ps = null;
     public static ResultSet rs = null;
@@ -25,12 +23,15 @@ public class ViewCourse extends JPanel {
     // 学生编号
     public static String student_no = null;
     private static Object[][] tableDatas = null;
-    public static Object[] tableTitles = {"编号", "名称", "课时", "学分", "老师", "地点", "得分"};
+    public static Object[] tableTitles = {"课程编号", "课程名称", "学分", "授课老师", "授课地点", "成绩"};
 
     public static DefaultTableModel model_1 = null;
 
+    // 退选按钮和下拉框
+    private static JButton btn_1 = null;
+    private static JComboBox<String> cb_1 = null;
 
-    public ViewCourse(String username) {
+    public DeleteCourse(String username) {
         super(true);
         initialize();
         initiateTableData();
@@ -47,6 +48,7 @@ public class ViewCourse extends JPanel {
     private void addComponent() {
         this.add(getUpPanel(), BorderLayout.NORTH);
         this.add(getCenterPanel(), BorderLayout.CENTER);
+        this.add(getDownPanel(), BorderLayout.SOUTH);
     }
 
     private JPanel getUpPanel() {
@@ -111,7 +113,7 @@ public class ViewCourse extends JPanel {
      */
     public static void initiateTableData() {
         // 获取本院系表格数据
-        ct = BConnection.getConnection();
+        ct = CConnection.getConnection();
         try {
             model_1 = new DefaultTableModel(tableTitles, 0);
             // 获取学生编号
@@ -158,6 +160,7 @@ public class ViewCourse extends JPanel {
      * 获取跨院系课程表格数据，包括表头、内容名
      */
     public static void initiateTableDataFromOther() {
+        cb_1 = new JComboBox<>();
         // 获取跨院系表格数据，追加到tableDatas
         DefaultTableModel model_2 = getChoiceCourses("A", "A", "20210001");
         tableDatas = new Object[model_1.getRowCount() + model_2.getRowCount()][model_1.getColumnCount()];
@@ -165,11 +168,40 @@ public class ViewCourse extends JPanel {
             for (int j = 0; j < model_1.getColumnCount(); j++) {
                 tableDatas[i][j] = model_1.getValueAt(i, j);
             }
+            cb_1.addItem((String) model_1.getValueAt(i, 1));
         }
         for (int i = 0; i < model_2.getRowCount(); i++) {
             for (int j = 0; j < model_2.getColumnCount(); j++) {
                 tableDatas[i + model_1.getRowCount()][j] = model_2.getValueAt(i, j);
             }
+            cb_1.addItem((String) model_2.getValueAt(i, 1));
         }
     }
+
+    private JPanel getDownPanel() {
+        // 下拉框和选课按钮
+        JPanel panelDown = new JPanel();
+        panelDown.setBackground(UiConsts.MAIN_BACK_COLOR);
+        panelDown.setLayout(new FlowLayout(FlowLayout.LEFT, UiConsts.MAIN_H_GAP, 5));
+        JLabel labelTitle = new JLabel("退选");
+        labelTitle.setFont(UiConsts.FONT_TITLE);
+        labelTitle.setForeground(UiConsts.TOOL_BAR_BACK_COLOR);
+        panelDown.add(labelTitle);
+        panelDown.add(cb_1);
+        JButton btnChoose = new JButton("退选");
+        btnChoose.setFont(UiConsts.FONT_NORMAL);
+        btnChoose.setBackground(UiConsts.TOOL_BAR_BACK_COLOR);
+        btnChoose.setForeground(Color.white);
+        btnChoose.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String courseName = (String) cb_1.getSelectedItem();
+                String courseNo = "";
+            }
+        });
+        panelDown.add(btnChoose);
+        return panelDown;
+    }
+
 }
+

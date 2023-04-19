@@ -1,8 +1,7 @@
-package org.systemB.ui.panel;
+package org.systemC.ui.panel;
 
-import org.systemB.App;
-import org.systemB.sql.BConnection;
-import org.systemB.ui.UiConsts;
+import org.systemC.sql.CConnection;
+import org.systemC.ui.UiConsts;
 
 import javax.swing.*;
 import java.awt.*;
@@ -43,17 +42,18 @@ public class PersonalInfo extends JPanel {
     }
 
     public static void setContent(String username) {
-        ct = BConnection.getConnection();
+        user = username;
+        ct = CConnection.getConnection();
         try {
-            ps = ct.prepareStatement("select * from 学生 where 学号 = ?");
-            ps.setString(1, App.student_no);
+            ps = ct.prepareStatement("select * from 学生 where 关联账户 = ?");
+            ps.setString(1, username);
             rs = ps.executeQuery();
             while (rs.next()) {
                 jl_1 = new JLabel("学号: " + rs.getString("学号"));
                 jl_2 = new JLabel("姓名: " + rs.getString("姓名"));
                 jl_3 = new JLabel("性别: " + rs.getString("性别"));
-                jl_4 = new JLabel("专业: " + rs.getString("专业"));
-                jl_5 = new JLabel("密码: " + rs.getString("密码"));
+                jl_4 = new JLabel("院系: " + rs.getString("院系"));
+                jl_5 = new JLabel("关联账户: " + rs.getString("关联账户"));
             }
         }
         catch (Exception e) {
