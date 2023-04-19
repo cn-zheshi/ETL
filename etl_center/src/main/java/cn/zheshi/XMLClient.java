@@ -2,6 +2,7 @@ package cn.zheshi;
 
 import cn.zheshi.net.HttpHelper;
 import cn.zheshi.trans.Trans;
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,6 +27,7 @@ public class XMLClient {
     private static final String serverCURL = "http://localhost:5052";
     private static final String courseSuffix = "/course";
     private static final String choiceSuffix = "/select";
+    private static final String chooseSuffix = "/choose";
     private static final String studentSuffix = "/student";
     // 已选课程
     private static final String courseChosed = "/courseChosed";
@@ -68,15 +70,19 @@ public class XMLClient {
         return fromClassXML;
     }
     // 选课请求
-    @RequestMapping("/classChoice")
+    @RequestMapping("/selectCourse")
     public String chooseClass(@RequestParam("from") String from,
                               @RequestParam("to") String to,
             @RequestBody String classChoice){
-        String formatChoiceXML=Trans.doXsl(basePath+formatChoice, classChoice).getToContent();
+        // 将classChoice转为JSONObject
+        JSONObject classChoiceJSON = JSONObject.parseObject(classChoice);
+        String classChoiceXML = classChoiceJSON.getString("xml");
+        String formatChoiceXML=Trans.doXsl(basePath+formatChoice, classChoiceXML).getToContent();
         String toChoiceXML=Trans.doXsl(basePath+transChoice+to+suffix, formatChoiceXML).getToContent();
         //向目标服务器发送选课请求,返回值保存在res
         String toUrl=getToUrl(to);
-        toUrl=toUrl+choiceSuffix;
+        toUrl=toUrl+chooseSuffix;
+        System.out.println(toUrl);
         String res= null;
         try {
             res = HttpHelper.sendPost(toUrl,toChoiceXML);
@@ -118,11 +124,8 @@ public class XMLClient {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(toChoiceXML);
         String formatChoiceXML = Trans.doXsl(basePath+formatChoice, toChoiceXML).getToContent();
-        System.out.println(formatChoiceXML);
         String fromChoiceXML=Trans.doXsl(basePath+transChoice+from+suffix,formatChoiceXML).getToContent();
-        System.out.println(fromChoiceXML);
         return fromChoiceXML;
     }
 }

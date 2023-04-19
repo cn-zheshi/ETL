@@ -70,20 +70,14 @@ public class ViewCourse extends JPanel {
     }
 
     private JPanel getPanelGridBakFrom() {
-        // 本院系已选课程
-        // 跨院系已选课程
         JPanel panelGridBakFrom = new JPanel();
         panelGridBakFrom.setBackground(UiConsts.MAIN_BACK_COLOR);
         panelGridBakFrom.setLayout(new BorderLayout());
-
-        // 本院系已选课程控制面板 panelFromControl
         JPanel panelFromControl = new JPanel();
         panelFromControl.setLayout(new GridLayout(1, 2));
-
         JPanel panelFromControlLeft = new JPanel();
         panelFromControlLeft.setLayout(new FlowLayout(FlowLayout.LEFT, UiConsts.MAIN_H_GAP, 5));
         panelFromControlLeft.setBackground(UiConsts.MAIN_BACK_COLOR);
-
         JLabel labelFrom = new JLabel("本院系和跨院系已选课程，根据课程编号区分");
         labelFrom.setFont(new Font(PropertyUtil.getProperty("ds.ui.font.family"), 0, 18));
         labelFrom.setForeground(Color.gray);

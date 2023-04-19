@@ -5,6 +5,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 
 import java.io.IOException;
@@ -20,11 +21,8 @@ public class HttpHelper {
         // 设置post请求超时时间
         postMethod.getParams().setParameter(HttpMethodParams.SO_TIMEOUT, 60000);
         postMethod.addRequestHeader("Content-Type", "text/xml");
-
-        postMethod.setRequestBody(body);
-
+        postMethod.setRequestEntity(new StringRequestEntity(body, "text/xml", "utf-8"));
         httpClient.executeMethod(postMethod);
-
         String result = postMethod.getResponseBodyAsString();
         postMethod.releaseConnection();
         return result;

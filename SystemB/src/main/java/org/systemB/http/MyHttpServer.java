@@ -3,9 +3,14 @@ package org.systemB.http;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
 import org.systemB.sql.BConnection;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.sql.*;
@@ -31,8 +36,11 @@ public class MyHttpServer {
         httpServer.createContext("/test", new MyHandler());
         // 提供本院系的学生信息
         httpServer.createContext("/students", new MyHandler());
-        // 根据xml文件的信息，退选本院系的课
-        // unselect?courseId=xxx&studentId=xxx
+
+        // 选择本院系的课程
+        httpServer.createContext("/choose", new ChooseHandler());
+
+        // 退选本院系的课
         httpServer.createContext("/unselect", new MyHandler());
 
         // 查询所有课程信息
@@ -141,5 +149,56 @@ class ChoiceHandler implements HttpHandler {
         OutputStream os = httpExchange.getResponseBody();
         os.write(content.getBytes("UTF-8"));
         os.close();
+    }
+}
+
+class ChooseHandler implements HttpHandler {
+    public static Connection ct = null;
+    public static PreparedStatement ps = null;
+    public static ResultSet rs = null;
+    public static String studentNo = null;
+    public static String courseNo = null;
+
+    public void handle(HttpExchange httpExchange) throws IOException {
+        String content = "fail";
+        ct = BConnection.getConnection();
+        // 解析xml文件
+        InputStream is = httpExchange.getRequestBody();
+        SAXReader saxReader = new SAXReader();
+        Document document = null;
+        System.out.println("开始解析xml文件");
+        try {
+            document = saxReader.read(is);
+        } catch (DocumentException e) {
+            throw new RuntimeException(e);
+        }
+        Element root = document.getRootElement();
+        Element choice = root.element("choice");
+        studentNo = choice.element("学号").getText();
+        courseNo = choice.element("课程编号").getText();
+        try {
+            java.sql.Statement stmt = ct.createStatement();
+            // 随机生成一个得分
+            String score = String.valueOf((int)(Math.random() * 100));
+            String sql = "INSERT ALL INTO 选课 (课程编号, 学号, 得分) VALUES\n" +
+                    "('" + courseNo + "', '" + studentNo + "', '" + score + "')\n" +
+                    "SELECT 1 FROM DUAL";
+            java.sql.ResultSet rs = stmt.executeQuery(sql);
+            content = "success";
+            System.out.println("选课成功");
+        } catch (SQLException e) {
+            System.out.println("选课失败");
+            throw new RuntimeException(e);
+        }
+        finally {
+            //设置响应头属性及响应信息的长度
+            httpExchange.sendResponseHeaders(200, content.getBytes("UTF-8").length);
+            // 设置utf-8编码
+            httpExchange.getResponseHeaders().set("Content-Type", "text/plain; charset=utf-8");
+            //获得输出流
+            OutputStream os = httpExchange.getResponseBody();
+            os.write(content.getBytes("UTF-8"));
+            os.close();
+        }
     }
 }
