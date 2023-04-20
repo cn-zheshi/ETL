@@ -84,10 +84,11 @@ public class XMLParser {
             // 课程编号, 课程名称, 学分, 授课老师, 授课地点, 共享
             row[0] = course[0]; // 课程编号
             row[1] = course[1]; // 课程名称
-            row[2] = course[2]; // 学分
-            row[3] = course[3]; // 授课老师
-            row[4] = course[4]; // 授课地点
-            row[5] = course[5]; // 共享
+            row[2] = "无"; // 课时
+            row[3] = course[2]; // 学分
+            row[4] = course[3]; // 授课老师
+            row[5] = course[4]; // 授课地点
+            row[6] = course[5]; // 共享
             model.addRow(row);
         }
         return model;
