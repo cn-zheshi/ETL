@@ -28,6 +28,7 @@ public class XMLClient {
     private static final String courseSuffix = "/course";
     private static final String choiceSuffix = "/select";
     private static final String chooseSuffix = "/choose";
+    private static final String dropSuffix = "/drop";
     private static final String studentSuffix = "/student";
     // 已选课程
     private static final String courseChosed = "/courseChosed";
@@ -82,7 +83,28 @@ public class XMLClient {
         //向目标服务器发送选课请求,返回值保存在res
         String toUrl=getToUrl(to);
         toUrl=toUrl+chooseSuffix;
-        System.out.println(toUrl);
+        String res= null;
+        try {
+            res = HttpHelper.sendPost(toUrl,toChoiceXML);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
+    // 退课请求
+    @RequestMapping("/unselectCourse")
+    public String dropClasss(@RequestParam("from") String from,
+                             @RequestParam("to") String to,
+                             @RequestBody String classChoice) {
+        // 将classChoice转为JSONObject
+        JSONObject classChoiceJSON = JSONObject.parseObject(classChoice);
+        String classChoiceXML = classChoiceJSON.getString("xml");
+        String formatChoiceXML=Trans.doXsl(basePath+formatChoice, classChoiceXML).getToContent();
+        String toChoiceXML=Trans.doXsl(basePath+transChoice+to+suffix, formatChoiceXML).getToContent();
+        //向目标服务器发送选课请求,返回值保存在res
+        String toUrl=getToUrl(to);
+        toUrl=toUrl+dropSuffix;
         String res= null;
         try {
             res = HttpHelper.sendPost(toUrl,toChoiceXML);

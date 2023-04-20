@@ -184,7 +184,6 @@ public class ChooseCourse extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String courseName = (String) cb_1.getSelectedItem();
-                System.out.println(courseName);
                 // 如果courseName是在model_1中，说明是本院系的课程
                 if (courseName != null) {
                     for (int i = 0; i < model_1.getRowCount(); i++) {
@@ -195,12 +194,6 @@ public class ChooseCourse extends JPanel {
                             } catch (SQLException ex) {
                                 throw new RuntimeException(ex);
                             }
-                            // 刷新选课界面
-                            App.mainPanelCenter.removeAll();
-                            App.chooseCourse = new ChooseCourse(App.user);
-                            App.mainPanelCenter.add(App.chooseCourse, BorderLayout.CENTER);
-                            App.mainPanelCenter.updateUI();
-                            break;
                         }
                     }
                     // 如果courseName是在model_2中，说明是跨院系的课程
@@ -212,11 +205,6 @@ public class ChooseCourse extends JPanel {
                             } catch (UnsupportedEncodingException ex) {
                                 throw new RuntimeException(ex);
                             }
-                            // 刷新选课界面
-                            App.mainPanelCenter.removeAll();
-                            App.chooseCourse = new ChooseCourse(App.user);
-                            App.mainPanelCenter.add(App.chooseCourse, BorderLayout.CENTER);
-                            App.mainPanelCenter.updateUI();
                             break;
                         }
                     }
@@ -229,11 +217,6 @@ public class ChooseCourse extends JPanel {
                             } catch (UnsupportedEncodingException ex) {
                                 throw new RuntimeException(ex);
                             }
-                            // 刷新选课界面
-                            App.mainPanelCenter.removeAll();
-                            App.chooseCourse = new ChooseCourse(App.user);
-                            App.mainPanelCenter.add(App.chooseCourse, BorderLayout.CENTER);
-                            App.mainPanelCenter.updateUI();
                             break;
                         }
                     }
@@ -260,8 +243,8 @@ public class ChooseCourse extends JPanel {
         String sql = "insert into 选课 values(?, ?, ?)";
         try {
             PreparedStatement ps = ct.prepareStatement(sql);
-            ps.setString(1, student_no);
-            ps.setString(2, course_no);
+            ps.setString(1, course_no);
+            ps.setString(2, student_no);
             ps.setString(3, "80");
             ps.executeUpdate();
             JOptionPane.showMessageDialog(null, "选课成功", "提示", JOptionPane.INFORMATION_MESSAGE);
@@ -273,7 +256,7 @@ public class ChooseCourse extends JPanel {
     private void chooseCourseFromOther(String course_no, String student_no, String to) throws UnsupportedEncodingException {
         System.out.println("跨院系选课");
         String response = selectCourse("A", to, student_no, course_no);
-        if (response == "success") {
+        if (response.equals("success")) {
             JOptionPane.showMessageDialog(null, "选课成功", "提示", JOptionPane.INFORMATION_MESSAGE);
             // 刷新选课界面
             App.mainPanelCenter.removeAll();

@@ -52,8 +52,6 @@ CREATE TABLE 选课 (
   学生编号 VARCHAR(12),
   成绩 VARCHAR(3),
   CONSTRAINT PK_选课 PRIMARY KEY (课程编号, 学生编号),
-  CONSTRAINT FK_选课_课程 FOREIGN KEY (课程编号) REFERENCES 课程(课程编号),
-  CONSTRAINT FK_选课_学生 FOREIGN KEY (学生编号) REFERENCES 学生(学号)
 );
 
 -- 插入账户数据
@@ -84,7 +82,7 @@ VALUES ('C001', '20210001', '88'),
        ('C003', '20210001', '76'),
        ('C002', '20210002', '90'),
        ('C003', '20210002', '85'),
-       ('C002', '20210003', '92');
+       ('C002', '20210003', '92'),
        ('C003', '20210004', '80');
 
 

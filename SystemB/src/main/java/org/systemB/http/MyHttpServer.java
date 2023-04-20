@@ -41,7 +41,7 @@ public class MyHttpServer {
         httpServer.createContext("/choose", new ChooseHandler());
 
         // 退选本院系的课
-        httpServer.createContext("/unselect", new MyHandler());
+        httpServer.createContext("/drop", new DropHandler());
 
         // 查询所有课程信息
         // /course?studentNo=xxx
@@ -188,6 +188,55 @@ class ChooseHandler implements HttpHandler {
             System.out.println("选课成功");
         } catch (SQLException e) {
             System.out.println("选课失败");
+            throw new RuntimeException(e);
+        }
+        finally {
+            //设置响应头属性及响应信息的长度
+            httpExchange.sendResponseHeaders(200, content.getBytes("UTF-8").length);
+            // 设置utf-8编码
+            httpExchange.getResponseHeaders().set("Content-Type", "text/plain; charset=utf-8");
+            //获得输出流
+            OutputStream os = httpExchange.getResponseBody();
+            os.write(content.getBytes("UTF-8"));
+            os.close();
+        }
+    }
+}
+
+class DropHandler implements HttpHandler {
+    public static Connection ct = null;
+    public static PreparedStatement ps = null;
+    public static ResultSet rs = null;
+    public static String studentNo = null;
+    public static String courseNo = null;
+
+    public void handle(HttpExchange httpExchange) throws IOException {
+        String content = "fail";
+        ct = BConnection.getConnection();
+        // 解析xml文件
+        InputStream is = httpExchange.getRequestBody();
+        SAXReader saxReader = new SAXReader();
+        Document document = null;
+        System.out.println("开始解析xml文件");
+        try {
+            document = saxReader.read(is);
+        } catch (DocumentException e) {
+            throw new RuntimeException(e);
+        }
+        Element root = document.getRootElement();
+        Element choice = root.element("choice");
+        studentNo = choice.element("学号").getText();
+        courseNo = choice.element("课程编号").getText();
+        System.out.println(studentNo + " " + courseNo);
+        try {
+            java.sql.Statement stmt = ct.createStatement();
+            String sql = "DELETE FROM 选课 WHERE 学号 = '" + studentNo + "' AND 课程编号 = '" + courseNo + "'";
+            java.sql.ResultSet rs = stmt.executeQuery(sql);
+            content = "success";
+            System.out.println("退课成功");
+        } catch (SQLException e) {
+            System.out.println(e);
+            System.out.println("退课失败");
             throw new RuntimeException(e);
         }
         finally {

@@ -35,6 +35,17 @@ public class MyHttpClient {
         return response;
     }
     // 退选其它系统的课
+    public static String unselectCourse(String from, String to, String studentNo, String courseNo) throws UnsupportedEncodingException {
+        String url = baseUrl + "/unselectCourse?from=" + from + "&to=" + to;
+        // 生成选课的xml文件
+        String xml = generateSelectCourseXML(studentNo, courseNo);
+        String charset = "utf-8";
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("xml", xml);
+        // 把xml作为RequestBody发送给其它系统
+        String response = HttpClientUtil.doPost(url,jsonObject);
+        return response;
+    }
 
     // 获取其他系统的选课信息
     public static DefaultTableModel getChoiceCourses(String from, String to, String studentNo) {
