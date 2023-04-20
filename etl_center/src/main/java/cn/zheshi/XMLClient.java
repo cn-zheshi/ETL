@@ -80,6 +80,7 @@ public class XMLClient {
         String classChoiceXML = classChoiceJSON.getString("xml");
         String formatChoiceXML=Trans.doXsl(basePath+formatChoice, classChoiceXML).getToContent();
         String toChoiceXML=Trans.doXsl(basePath+transChoice+to+suffix, formatChoiceXML).getToContent();
+        System.out.println(toChoiceXML);
         //向目标服务器发送选课请求,返回值保存在res
         String toUrl=getToUrl(to);
         toUrl=toUrl+chooseSuffix;

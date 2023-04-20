@@ -54,7 +54,7 @@ public class xmlWriter {
         Document document = DocumentHelper.createDocument();
         Element root = document.addElement("Choices");
         Element choiceElement = root.addElement("choice");
-        choiceElement.addElement("学号").addText(studentNo);
+        choiceElement.addElement("学生编号").addText(studentNo);
         choiceElement.addElement("课程编号").addText(courseNo);
         xml = document.asXML();
         return xml;

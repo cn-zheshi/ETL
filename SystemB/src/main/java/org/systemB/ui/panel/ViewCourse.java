@@ -28,6 +28,8 @@ public class ViewCourse extends JPanel {
     public static Object[] tableTitles = {"编号", "名称", "课时", "学分", "老师", "地点", "得分"};
 
     public static DefaultTableModel model_1 = null;
+    public static DefaultTableModel model_2 = null;
+    public static DefaultTableModel model_3 = null;
 
 
     public ViewCourse(String username) {
@@ -152,8 +154,15 @@ public class ViewCourse extends JPanel {
      */
     public static void initiateTableDataFromOther() {
         // 获取跨院系表格数据，追加到tableDatas
-        DefaultTableModel model_2 = getChoiceCourses("B", "A", App.student_no);
-        DefaultTableModel model_3 = getChoiceCourses("B", "C", App.student_no);
+        model_2 = getChoiceCourses("B", "A", App.student_no);
+        model_3 = getChoiceCourses("B", "C", App.student_no);
+        // 打印model_2
+        for (int i = 0; i < model_2.getRowCount(); i++) {
+            for (int j = 0; j < model_2.getColumnCount(); j++) {
+                System.out.print(model_2.getValueAt(i, j) + " ");
+            }
+            System.out.println();
+        }
         // 打印model_3
         for (int i = 0; i < model_3.getRowCount(); i++) {
             for (int j = 0; j < model_3.getColumnCount(); j++) {

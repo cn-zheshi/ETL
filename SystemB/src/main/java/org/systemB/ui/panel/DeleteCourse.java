@@ -8,11 +8,14 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import static org.systemB.http.MyHttpClient.getChoiceCourses;
+import static org.systemB.http.MyHttpClient.unselectCourse;
 
 public class DeleteCourse extends JPanel {
     public static Connection ct = null;
@@ -20,14 +23,12 @@ public class DeleteCourse extends JPanel {
     public static ResultSet rs = null;
     // 本院系已选课程，跨院系已选课程
     private static JTable jt_1 = null;
-    // 学生编号
     public static String student_no = null;
     private static Object[][] tableDatas = null;
-    public static Object[] tableTitles = {"课程编号", "课程名称", "学分", "授课老师", "授课地点", "成绩"};
-
+    public static Object[] tableTitles = {"编号", "名称", "课时", "学分", "老师", "地点", "成绩"};
     public static DefaultTableModel model_1 = null;
-
-    // 退选按钮和下拉框
+    public static DefaultTableModel model_2 = null;
+    public static DefaultTableModel model_3 = null;
     private static JButton btn_1 = null;
     private static JComboBox<String> cb_1 = null;
 
@@ -71,12 +72,9 @@ public class DeleteCourse extends JPanel {
     }
 
     private JPanel getPanelGridBakFrom() {
-        // 本院系已选课程
-        // 跨院系已选课程
         JPanel panelGridBakFrom = new JPanel();
         panelGridBakFrom.setBackground(UiConsts.MAIN_BACK_COLOR);
         panelGridBakFrom.setLayout(new BorderLayout());
-
         // 本院系已选课程控制面板 panelFromControl
         JPanel panelFromControl = new JPanel();
         panelFromControl.setLayout(new GridLayout(1, 2));
@@ -116,30 +114,23 @@ public class DeleteCourse extends JPanel {
         ct = BConnection.getConnection();
         try {
             model_1 = new DefaultTableModel(tableTitles, 0);
-            // 获取学生编号
-            ps = ct.prepareStatement("select * from 学生 where 关联账户 = ?");
-            ps.setString(1, App.user);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                student_no = rs.getString("学号");
-            }
-            // 获取已选课程的信息
-            ps = ct.prepareStatement("select * from 选课 where 学生编号 = ?");
-            ps.setString(1, student_no);
+            ps = ct.prepareStatement("select * from 选课 where 学号 = ?");
+            ps.setString(1, App.student_no);
             rs = ps.executeQuery();
             while (rs.next()) {
                 String course_no = rs.getString("课程编号");
-                ps = ct.prepareStatement("select * from 课程 where 课程编号 = ?");
+                ps = ct.prepareStatement("select * from 课程 where 编号 = ?");
                 ps.setString(1, course_no);
                 ResultSet rs_1 = ps.executeQuery();
                 while (rs_1.next()) {
                     String [] row_1 = {
-                            rs_1.getString("课程编号"),
-                            rs_1.getString("课程名称"),
+                            rs_1.getString("编号"),
+                            rs_1.getString("名称"),
+                            rs_1.getString("课时"),
                             rs_1.getString("学分"),
-                            rs_1.getString("授课老师"),
-                            rs_1.getString("授课地点"),
-                            rs.getString("成绩")
+                            rs_1.getString("老师"),
+                            rs_1.getString("地点"),
+                            rs.getString("得分")
                     };
                     model_1.addRow(row_1);
                 }
@@ -162,8 +153,9 @@ public class DeleteCourse extends JPanel {
     public static void initiateTableDataFromOther() {
         cb_1 = new JComboBox<>();
         // 获取跨院系表格数据，追加到tableDatas
-        DefaultTableModel model_2 = getChoiceCourses("A", "A", "20210001");
-        tableDatas = new Object[model_1.getRowCount() + model_2.getRowCount()][model_1.getColumnCount()];
+        model_2 = getChoiceCourses("B", "A", App.student_no);
+        model_3 = getChoiceCourses("B", "C", App.student_no);
+        tableDatas = new Object[model_1.getRowCount() + model_2.getRowCount() + model_3.getRowCount()][model_1.getColumnCount()];
         for (int i = 0; i < model_1.getRowCount(); i++) {
             for (int j = 0; j < model_1.getColumnCount(); j++) {
                 tableDatas[i][j] = model_1.getValueAt(i, j);
@@ -176,9 +168,16 @@ public class DeleteCourse extends JPanel {
             }
             cb_1.addItem((String) model_2.getValueAt(i, 1));
         }
+        for (int i = 0; i < model_3.getRowCount(); i++) {
+            for (int j = 0; j < model_3.getColumnCount(); j++) {
+                tableDatas[i + model_1.getRowCount() + model_2.getRowCount()][j] = model_3.getValueAt(i, j);
+            }
+            cb_1.addItem((String) model_3.getValueAt(i, 1));
+        }
     }
 
-    private JPanel getDownPanel() {
+    private JPanel getDownPanel()
+    {
         // 下拉框和选课按钮
         JPanel panelDown = new JPanel();
         panelDown.setBackground(UiConsts.MAIN_BACK_COLOR);
@@ -196,11 +195,85 @@ public class DeleteCourse extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String courseName = (String) cb_1.getSelectedItem();
-                String courseNo = "";
+                // 如果courseName在model_1中，则是本院系的课程
+                if (courseName != null) {
+                    for (int i = 0; i < model_1.getRowCount(); i++) {
+                        if (courseName.equals(model_1.getValueAt(i, 1))) {
+                            // 退课
+                            try {
+                                deleteCourse((String) model_1.getValueAt(i, 0), App.student_no);
+                            } catch (SQLException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                            // 刷新退课界面
+                            App.mainPanelCenter.removeAll();
+                            App.deleteCourse = new DeleteCourse(App.user);
+                            App.mainPanelCenter.add(App.deleteCourse, BorderLayout.CENTER);
+                            App.mainPanelCenter.updateUI();
+                            break;
+                        }
+
+                    }
+                    // 如果courseName是在model_2中，说明是跨院系的课程
+                    for (int i = 0; i < model_2.getRowCount(); i++) {
+                        if (courseName.equals(model_2.getValueAt(i, 1))) {
+                            // 选课
+                            try {
+                                deleteCourseFromOther((String) model_2.getValueAt(i, 0), App.student_no, "A");
+                            } catch (UnsupportedEncodingException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                            break;
+                        }
+                    }
+                    // 如果courseName是在model_3中，说明是跨院系的课程
+                    for (int i = 0; i < model_3.getRowCount(); i++) {
+                        if (courseName.equals(model_3.getValueAt(i, 1))) {
+                            // 选课
+                            try {
+                                deleteCourseFromOther((String) model_3.getValueAt(i, 0), App.student_no, "C");
+                            } catch (UnsupportedEncodingException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                            break;
+                        }
+                    }
+                }
+                else {
+                    JOptionPane.showMessageDialog(null, "请选择课程", "提示", JOptionPane.WARNING_MESSAGE);
+                }
             }
         });
         panelDown.add(btnChoose);
         return panelDown;
+    }
+
+    private void deleteCourse(String course_no, String student_no) throws SQLException {
+        System.out.println("本院系退课");
+        ps = ct.prepareStatement("delete from 选课 where 课程编号 = ? and 学号 = ?");
+        ps.setString(1, course_no);
+        ps.setString(2, student_no);
+        try {
+            ps.executeUpdate();
+            JOptionPane.showMessageDialog(null, "退课成功", "提示", JOptionPane.INFORMATION_MESSAGE);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "退课失败", "提示", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    private void deleteCourseFromOther(String course_no, String student_no, String to) throws UnsupportedEncodingException {
+        System.out.println("跨院系退课");
+        String response = unselectCourse("B", to, student_no, course_no);
+        if (response.equals("success")) {
+            JOptionPane.showMessageDialog(null, "退课成功", "提示", JOptionPane.INFORMATION_MESSAGE);
+            // 刷新退选界面
+            App.mainPanelCenter.removeAll();
+            App.deleteCourse = new DeleteCourse(App.user);
+            App.mainPanelCenter.add(App.deleteCourse, BorderLayout.CENTER);
+            App.mainPanelCenter.updateUI();
+        } else {
+            JOptionPane.showMessageDialog(null, "退课失败", "提示", JOptionPane.WARNING_MESSAGE);
+        }
     }
 
 }
