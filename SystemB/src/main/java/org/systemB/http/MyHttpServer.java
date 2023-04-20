@@ -235,7 +235,6 @@ class DropHandler implements HttpHandler {
             content = "success";
             System.out.println("退课成功");
         } catch (SQLException e) {
-            System.out.println(e);
             System.out.println("退课失败");
             throw new RuntimeException(e);
         }

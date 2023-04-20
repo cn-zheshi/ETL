@@ -3,9 +3,14 @@ package org.systemC.http;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
 import org.systemC.sql.CConnection;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.sql.Connection;
@@ -47,6 +52,12 @@ public class MyHttpServer {
         // 根据学号查询选课信息
         // /select?studentNo=xxx
         httpServer.createContext("/select", new ChoiceHandler());
+
+        // 选择本院系的课程
+        httpServer.createContext("/choose", new ChooseHandler());
+
+        // 退选本院系的课
+        httpServer.createContext("/drop", new DropHandler());
 
         httpServer.start();
     }
@@ -152,5 +163,103 @@ class ChoiceHandler implements HttpHandler {
         OutputStream os = httpExchange.getResponseBody();
         os.write(content.getBytes("UTF-8"));
         os.close();
+    }
+}
+
+class ChooseHandler implements HttpHandler {
+    public static Connection ct = null;
+    public static PreparedStatement ps = null;
+    public static ResultSet rs = null;
+    public static String studentNo = null;
+    public static String courseNo = null;
+
+    public void handle(HttpExchange httpExchange) throws IOException {
+        String content = "fail";
+        ct = CConnection.getConnection();
+        // 解析xml文件
+        InputStream is = httpExchange.getRequestBody();
+        SAXReader saxReader = new SAXReader();
+        Document document = null;
+        System.out.println("开始解析xml文件");
+        try {
+            document = saxReader.read(is);
+        } catch (DocumentException e) {
+            throw new RuntimeException(e);
+        }
+        Element root = document.getRootElement();
+        Element choice = root.element("choice");
+        courseNo = choice.element("Cno").getText();
+        studentNo = choice.element("Sno").getText();
+        try {
+            java.sql.Statement stmt = ct.createStatement();
+            // 随机生成一个得分
+            String score = String.valueOf((int)(Math.random() * 100));
+            String sql = "INSERT INTO 选课 (Cno, Sno, Grd)\n" +
+                    "VALUES ('" + courseNo + "', '" + studentNo + "', '" + score + "')";
+            int rows = stmt.executeUpdate(sql);
+            content = "success";
+            System.out.println("选课成功");
+        } catch (SQLException e) {
+            System.out.println("选课失败");
+            throw new RuntimeException(e);
+        }
+        finally {
+            //设置响应头属性及响应信息的长度
+            httpExchange.sendResponseHeaders(200, content.getBytes("UTF-8").length);
+            // 设置utf-8编码
+            httpExchange.getResponseHeaders().set("Content-Type", "text/plain; charset=utf-8");
+            //获得输出流
+            OutputStream os = httpExchange.getResponseBody();
+            os.write(content.getBytes("UTF-8"));
+            os.close();
+        }
+    }
+}
+
+class DropHandler implements HttpHandler {
+    public static Connection ct = null;
+    public static PreparedStatement ps = null;
+    public static ResultSet rs = null;
+    public static String studentNo = null;
+    public static String courseNo = null;
+
+    public void handle(HttpExchange httpExchange) throws IOException {
+        String content = "fail";
+        ct = CConnection.getConnection();
+        // 解析xml文件
+        InputStream is = httpExchange.getRequestBody();
+        SAXReader saxReader = new SAXReader();
+        Document document = null;
+        System.out.println("开始解析xml文件");
+        try {
+            document = saxReader.read(is);
+        } catch (DocumentException e) {
+            throw new RuntimeException(e);
+        }
+        Element root = document.getRootElement();
+        Element choice = root.element("choice");
+        courseNo = choice.element("Cno").getText();
+        studentNo = choice.element("Sno").getText();
+        try {
+            java.sql.Statement stmt = ct.createStatement();
+            String sql = "DELETE FROM 选课 WHERE Cno = '" + courseNo + "' AND Sno = '" + studentNo + "'";
+            int rows = stmt.executeUpdate(sql);
+            content = "success";
+            System.out.println("退课成功");
+        } catch (SQLException e) {
+            System.out.println(e);
+            System.out.println("退课失败");
+            throw new RuntimeException(e);
+        }
+        finally {
+            //设置响应头属性及响应信息的长度
+            httpExchange.sendResponseHeaders(200, content.getBytes("UTF-8").length);
+            // 设置utf-8编码
+            httpExchange.getResponseHeaders().set("Content-Type", "text/plain; charset=utf-8");
+            //获得输出流
+            OutputStream os = httpExchange.getResponseBody();
+            os.write(content.getBytes("UTF-8"));
+            os.close();
+        }
     }
 }
