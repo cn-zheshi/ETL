@@ -59,6 +59,25 @@ public class xmlWriter {
         xml = document.asXML();
         return xml;
     }
+
+    public static String generateStudentInfo(List<String[]> students) {
+        String xml = null;
+        // 创建XML文档
+        Document document = DocumentHelper.createDocument();
+        Element root = document.addElement("Students");
+
+        for (String[] student : students) {
+            Element classElement = root.addElement("student");
+            classElement.addElement("学号").addText(student[0]);
+            classElement.addElement("姓名").addText(student[1]);
+            classElement.addElement("性别").addText(student[2]);
+            classElement.addElement("专业").addText(student[3]);
+        }
+
+        xml = document.asXML();
+
+        return xml;
+    }
 }
 
 

@@ -3,6 +3,7 @@ package cn.zheshi;
 import cn.zheshi.net.HttpHelper;
 import cn.zheshi.trans.Trans;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.httpclient.HttpException;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,6 +33,8 @@ public class XMLClient {
     private static final String studentSuffix = "/student";
     // 已选课程
     private static final String courseChosed = "/courseChosed";
+    private static final String openCourseShare = "/openCourseShare";
+    private static final String updateScore = "/updateScore";
 
 
     private String getToUrl(String to){
@@ -116,10 +119,22 @@ public class XMLClient {
     }
 
     @RequestMapping("/getAllStudents")
-    public String getAllStudents(){
-        //TODO:请求所有学生信息
-        return "test";
+    public String getAllStudents(@RequestParam("from") String from, @RequestParam("to") String to){
+        // 获取to服务器上的所有学生信息
+        String toUrl = getToUrl(to);
+        toUrl = toUrl + studentSuffix;
+        String toStudentXML= null;
+        System.out.println("toUrl:"+toUrl);
+        try {
+            toStudentXML = HttpHelper.sendGet(toUrl);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String formatStudentXML = Trans.doXsl(basePath+formatStudent, toStudentXML).getToContent();
+        String fromStudentXML = Trans.doXsl(basePath+transStudent+from+suffix,formatStudentXML).getToContent();
+        return fromStudentXML;
     }
+
     @RequestMapping("/getAllCourses")
     public String getAllCourses(@RequestParam("from") String from, @RequestParam("to") String to, @RequestParam("studentNo") String studentNo){
         // 获取to服务器上的所有课程信息
@@ -151,4 +166,42 @@ public class XMLClient {
         String fromChoiceXML=Trans.doXsl(basePath+transChoice+from+suffix,formatChoiceXML).getToContent();
         return fromChoiceXML;
     }
+
+    // openShareCourse
+    @RequestMapping("/openShareCourse")
+    public String openShareCourse(@RequestParam("from") String from, @RequestParam("to") String to, @RequestParam("courseNo") String courseNo) {
+        String toUrl = getToUrl(to);
+        toUrl = toUrl + openCourseShare + "?courseNo=" + courseNo;
+        String res = null;
+        try {
+            res = HttpHelper.sendGet(toUrl);
+        } catch (HttpException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return res;
+    }
+
+    // updateScore
+    @RequestMapping("/updateScore")
+    public String updateScore(@RequestParam("from") String from, @RequestParam("to") String to, @RequestParam("score") String score, @RequestBody String classChoice) {
+        // 将classChoice转为JSONObject
+        JSONObject classChoiceJSON = JSONObject.parseObject(classChoice);
+        String classChoiceXML = classChoiceJSON.getString("xml");
+        String formatChoiceXML=Trans.doXsl(basePath+formatChoice, classChoiceXML).getToContent();
+        String toChoiceXML=Trans.doXsl(basePath+transChoice+to+suffix, formatChoiceXML).getToContent();
+        //向目标服务器发送选课请求,返回值保存在res
+        String toUrl=getToUrl(to);
+        toUrl=toUrl+updateScore + "?score=" + score;
+        System.out.println(toUrl);
+        String res= null;
+        try {
+            res = HttpHelper.sendPost(toUrl,toChoiceXML);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
 }

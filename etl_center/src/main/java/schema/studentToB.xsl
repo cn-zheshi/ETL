@@ -12,9 +12,9 @@
                     <学号>
                         <xsl:value-of select="id" />
                     </学号>
-                    <名臣>
+                    <名称>
                         <xsl:value-of select="name" />
-                    </名臣>
+                    </名称>
                     <性别>
                         <xsl:value-of select="sex" />
                     </性别>

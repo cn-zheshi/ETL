@@ -19,6 +19,7 @@ import java.util.List;
 
 import static org.systemB.util.xmlWriter.generateChoiceInfo;
 import static org.systemB.util.xmlWriter.generateCourseInfo;
+import static org.systemB.util.xmlWriter.generateStudentInfo;
 
 /**
  * 根据Java提供的API实现Http服务器
@@ -32,10 +33,9 @@ public class MyHttpServer {
     public static void main(String[] args) throws IOException {
         // 创建HttpServer服务器
         HttpServer httpServer = HttpServer.create(new InetSocketAddress(5051), 10);
-        //将 / 请求交给MyHandler处理器处理
-        httpServer.createContext("/test", new MyHandler());
+
         // 提供本院系的学生信息
-        httpServer.createContext("/students", new MyHandler());
+        httpServer.createContext("/student", new StudentHandler());
 
         // 选择本院系的课程
         httpServer.createContext("/choose", new ChooseHandler());
@@ -48,23 +48,14 @@ public class MyHttpServer {
         httpServer.createContext("/course", new CourseHandler());
 
         // 根据学号查询选课信息
-        // /select?studentNo=xxx
         httpServer.createContext("/select", new ChoiceHandler());
 
+        // 开放选课
+        httpServer.createContext("/openCourseShare", new OpenCourseShareHandler());
+
+        // 修改分数
+        httpServer.createContext("/updateScore", new UpdateScoreHandler());
         httpServer.start();
-    }
-}
-
-class MyHandler implements HttpHandler {
-
-    public void handle(HttpExchange httpExchange) throws IOException {
-        String content = "test";
-        //设置响应头属性及响应信息的长度
-        httpExchange.sendResponseHeaders(200, content.length());
-        //获得输出流
-        OutputStream os = httpExchange.getResponseBody();
-        os.write(content.getBytes());
-        os.close();
     }
 }
 
@@ -178,8 +169,8 @@ class ChooseHandler implements HttpHandler {
         courseNo = choice.element("课程编号").getText();
         try {
             java.sql.Statement stmt = ct.createStatement();
-            // 随机生成一个得分
-            String score = String.valueOf((int)(Math.random() * 100));
+            // 0分
+            String score = "0";
             String sql = "INSERT ALL INTO 选课 (课程编号, 学号, 得分) VALUES\n" +
                     "('" + courseNo + "', '" + studentNo + "', '" + score + "')\n" +
                     "SELECT 1 FROM DUAL";
@@ -239,6 +230,135 @@ class DropHandler implements HttpHandler {
             throw new RuntimeException(e);
         }
         finally {
+            //设置响应头属性及响应信息的长度
+            httpExchange.sendResponseHeaders(200, content.getBytes("UTF-8").length);
+            // 设置utf-8编码
+            httpExchange.getResponseHeaders().set("Content-Type", "text/plain; charset=utf-8");
+            //获得输出流
+            OutputStream os = httpExchange.getResponseBody();
+            os.write(content.getBytes("UTF-8"));
+            os.close();
+        }
+    }
+}
+
+class StudentHandler implements HttpHandler {
+    public static Connection ct = null;
+    public static PreparedStatement ps = null;
+    public static ResultSet rs = null;
+    public void handle(HttpExchange httpExchange) throws IOException {
+        String content = null;
+        ct = BConnection.getConnection();
+        try {
+            java.sql.Statement stmt = ct.createStatement();
+            rs = stmt.executeQuery("select * from 学生");
+            List<String[]> students = new ArrayList<>();
+            while (rs.next()) {
+                String[] student = new String[4];
+                student[0] = rs.getString("学号");
+                student[1] = rs.getString("姓名");
+                student[2] = rs.getString("性别");
+                student[3] = rs.getString("专业");
+                students.add(student);
+            }
+            // 将查询结果转换为xml格式
+            content = generateStudentInfo(students);
+        } catch (SQLException e) {
+            System.out.println("查询学生信息失败");
+            throw new RuntimeException(e);
+        }
+        //设置响应头属性及响应信息的长度
+        httpExchange.sendResponseHeaders(200, content.getBytes("UTF-8").length);
+        // 设置utf-8编码
+        httpExchange.getResponseHeaders().set("charset", "utf-8");
+        //获得输出流
+        OutputStream os = httpExchange.getResponseBody();
+        os.write(content.getBytes("UTF-8"));
+        os.close();
+    }
+}
+
+class OpenCourseShareHandler implements HttpHandler {
+    public static Connection ct = null;
+    public static PreparedStatement ps = null;
+    public static ResultSet rs = null;
+    public void handle(HttpExchange httpExchange) throws IOException {
+        ct = BConnection.getConnection();
+        String url = httpExchange.getRequestURI().toString();
+        String[] params = url.split("\\?");
+        String[] param = params[1].split("&");
+        String courseNo = param[0].split("=")[1];
+        String content = "fail";
+        try {
+            // 首先获取共享的值
+            java.sql.Statement stmt = ct.createStatement();
+            String sql = "SELECT 共享 FROM 课程 WHERE 编号 = '" + courseNo + "'";
+            java.sql.ResultSet rs = stmt.executeQuery(sql);
+            rs.next();
+            String share = rs.getString("共享");
+            if (share.equals("1")) {
+                share = "0";
+            } else {
+                share = "1";
+            }
+            // 更新共享的值
+            sql = "UPDATE 课程 SET 共享 = '" + share + "' WHERE 编号 = '" + courseNo + "'";
+            stmt.executeUpdate(sql);
+            content = "success";
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        } finally {
+            //设置响应头属性及响应信息的长度
+            httpExchange.sendResponseHeaders(200, content.getBytes("UTF-8").length);
+            // 设置utf-8编码
+            httpExchange.getResponseHeaders().set("charset", "utf-8");
+            //获得输出流
+            OutputStream os = httpExchange.getResponseBody();
+            os.write(content.getBytes("UTF-8"));
+            os.close();
+            }
+        }
+}
+
+class UpdateScoreHandler implements HttpHandler {
+    public static Connection ct = null;
+    public static PreparedStatement ps = null;
+    public static ResultSet rs = null;
+    public static String studentNo = null;
+    public static String courseNo = null;
+
+    public void handle(HttpExchange httpExchange) throws IOException {
+        String content = "fail";
+        ct = BConnection.getConnection();
+        // 解析xml文件
+        InputStream is = httpExchange.getRequestBody();
+        SAXReader saxReader = new SAXReader();
+        Document document = null;
+        System.out.println("开始解析xml文件");
+        try {
+            document = saxReader.read(is);
+        } catch (DocumentException e) {
+            throw new RuntimeException(e);
+        }
+        Element root = document.getRootElement();
+        Element choice = root.element("choice");
+        studentNo = choice.element("学号").getText();
+        courseNo = choice.element("课程编号").getText();
+        System.out.println(studentNo + " " + courseNo);
+        // 从url中获取score
+        String url = httpExchange.getRequestURI().toString();
+        String[] params = url.split("\\?");
+        String[] param = params[1].split("&");
+        String score = param[0].split("=")[1];
+        System.out.println(score);
+        try {
+            String sql = "UPDATE 选课 SET 得分 = '" + score + "' WHERE 学号 = '" + courseNo + "' AND 课程编号 = '" + studentNo + "'";
+            java.sql.Statement stmt = ct.createStatement();
+            stmt.executeUpdate(sql);
+            content = "success";
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
             //设置响应头属性及响应信息的长度
             httpExchange.sendResponseHeaders(200, content.getBytes("UTF-8").length);
             // 设置utf-8编码

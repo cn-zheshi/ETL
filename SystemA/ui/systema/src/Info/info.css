@@ -1,0 +1,11 @@
+.infoCard {
+  width: 500px;
+  margin: 50px auto;
+}
+
+.buttonGroup {
+  width: 200px;
+  margin: 50px auto;
+  display: flex;
+  justify-content: space-between;
+}

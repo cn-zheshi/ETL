@@ -1,0 +1,12 @@
+.adminPage h2{
+    text-align: center;
+}
+
+.adminTabs {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 1000px;
+    padding: 0 20px;
+}

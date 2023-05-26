@@ -8,18 +8,22 @@
         <Students>
             <xsl:for-each select="student">
                 <student>
-                    <xsl:choose>
-                        <xsl:when test="./Sno=''">
-                            <id>
-                                <xsl:value-of select="学号"/>
-                            </id>
-                        </xsl:when>
-                        <xsl:when test="./Sno!=''">
-                            <id>
-                                <xsl:value-of select="Sno"/>
-                            </id>
-                        </xsl:when>
-                    </xsl:choose>
+<!--                    <xsl:choose>-->
+<!--                        <xsl:when test="./Sno=''">-->
+<!--                            <id>-->
+<!--                                <xsl:value-of select="学号"/>-->
+<!--                            </id>-->
+<!--                        </xsl:when>-->
+<!--                        <xsl:when test="./Sno!=''">-->
+<!--                            <id>-->
+<!--                                <xsl:value-of select="Sno"/>-->
+<!--                            </id>-->
+<!--                        </xsl:when>-->
+<!--                    </xsl:choose>-->
+                    <id>
+                        <xsl:value-of select="学号"/>
+                        <xsl:value-of select="Sno"/>
+                    </id>
                     <name>
                         <xsl:value-of select="姓名"/>
                         <xsl:value-of select="名臣"/>

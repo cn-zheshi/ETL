@@ -158,4 +158,40 @@ public class XMLParser {
         }
         return model;
     }
+
+    // 解析学生信息
+    public static DefaultTableModel parseStudentInfo(String studentResponse) {
+        DefaultTableModel model = new DefaultTableModel(ViewCourse.tableTitles, 0);
+        SAXReader saxReader = new SAXReader();
+        Document studentDocument = null;
+        List<String[]> students = new ArrayList< String[]>();
+        try {
+            InputStream inputStream = new ByteArrayInputStream(studentResponse.getBytes("UTF-8"));
+            studentDocument = saxReader.read(inputStream);
+        } catch (DocumentException e) {
+            throw new RuntimeException(e);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+        Element root = studentDocument.getRootElement();
+        for (Iterator i = root.elementIterator(); i.hasNext();) {
+            Element foo = (Element) i.next();
+            Vector<String> student = new Vector<String>();
+            for (Iterator j = foo.elementIterator(); j.hasNext();) {
+                Element tmp = (Element) j.next();
+                student.add(tmp.getStringValue());
+            }
+            students.add(student.toArray(new String[0]));
+        }
+        for (String[] student : students) {
+            String[] row = new String[ViewCourse.tableTitles.length];
+            // 学号, 姓名, 性别, 院系
+            row[0] = student[0]; // 学号
+            row[1] = student[1]; // 姓名
+            row[2] = student[2]; // 性别
+            row[3] = student[3]; // 院系
+            model.addRow(row);
+        }
+        return model;
+    }
 }

@@ -1,0 +1,13 @@
+.giveGradePage h2{
+    text-align: center;
+}
+
+.studentCard {
+  width: 500px;
+  margin: 50px auto;
+}
+
+.gradeTable {
+  width: 800px;
+  margin: 50px auto;
+}

@@ -1,0 +1,9 @@
+.login-form {
+    width: 340px;
+    margin: 50px auto;
+    font-size: 15px;
+}
+
+.login-wrapper h2 {
+    text-align: center;
+}
